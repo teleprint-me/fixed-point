@@ -1,0 +1,35 @@
+---
+# Use LLVM style as the base, with 4 columns indentation.
+BasedOnStyle: LLVM
+IndentWidth: 4
+AccessModifierOffset: -2
+AlignAfterOpenBracket: BlockIndent
+AlignConsecutiveMacros: AcrossEmptyLines
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+# Enable AlignConsecutiveAssignments for aligned assignments.
+AlignConsecutiveAssignments: true
+ColumnLimit: 80  # Maximum line length set to 80 characters
+MaxEmptyLinesToKeep: 1
+ConstructorInitializerIndentWidth: 10
+BreakBeforeBinaryOperators: true
+# Bracket alignment style similar to Python.
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterStruct:     true
+  AfterUnion:      true
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false  # Disable extra indentation for braces
+# Define specific formatting options for C/C++.
+Language: Cpp
+DerivePointerAlignment: false
+PointerAlignment: Left
+...
