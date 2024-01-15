@@ -1,17 +1,29 @@
-# Prerequisites
-*.d
+# CMake build directories
+/build/
+/CMakeFiles/
+/CMakeScripts/
+/CMakeCache.txt
+/CMakeCache/
+/CMakeOutput.log
+/CMakeTmp/
 
-# Compiled Object files
+# Compiled and binary files
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Compiled object files
 *.slo
 *.lo
-*.o
 *.obj
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
+# Compiled dynamic libraries
 *.so
 *.dylib
 *.dll
@@ -20,13 +32,12 @@
 *.mod
 *.smod
 
-# Compiled Static libraries
+# Compiled static libraries
 *.lai
 *.la
 *.a
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
