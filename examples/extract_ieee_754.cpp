@@ -35,6 +35,44 @@ int extract_sign_bit(float float_value) {
     return (binary_representation >> 31) & 1;
 }
 
+// Function to extract the exponent bits from a float
+int extract_exponent_bits(float float_value) {
+    static_assert(sizeof(float) == sizeof(int), "Float and int must have the same size");
+
+    int binary_representation;
+    std::memcpy(&binary_representation, &float_value, sizeof(float));
+
+    // Extract the exponent bits (bits 30-23) by masking and shifting
+    return (binary_representation >> 23) & 0xFF; // Assuming 32-bit single-precision
+}
+
+// Function to extract the mantissa bits from a float
+int extract_mantissa_bits(float float_value) {
+    static_assert(sizeof(float) == sizeof(int), "Float and int must have the same size");
+
+    int binary_representation;
+    std::memcpy(&binary_representation, &float_value, sizeof(float));
+
+    // Extract the mantissa bits (bits 22-0) by masking
+    return binary_representation & 0x7FFFFF; // Assuming 32-bit single-precision
+}
+
+// Function to extract all components of a floating-point number
+MetaFloat extract_float_metadata(float float_value) {
+    MetaFloat meta_float;
+    
+    // Extract the sign bit
+    meta_float.sign = extract_sign_bit(float_value);
+
+    // Extract the exponent bits
+    meta_float.exponent = extract_exponent_bits(float_value);
+
+    // Extract the mantissa bits
+    meta_float.fraction = extract_mantissa_bits(float_value);
+
+    return meta_float;
+}
+
 int main() {
     float my_float = 6.25f; // Specify the floating point number
 
