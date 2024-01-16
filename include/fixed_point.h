@@ -16,7 +16,7 @@
 #define FIXED_VAL (1 << FIXED_SIZE) // 2^16, for scaling between int and fixed-point
 
 // Define fixed-point data type and conversion macros
-typedef int32_t fixed16; // Using 32-bit integer for fixed-point calculations
+typedef int32_t fixed16_t; // Using 32-bit integer for fixed-point calculations
 
 // Converts a fixed-point number to an integer (truncating the fractional part)
 #define FIXED_TO_INT(x) ((x) >> FIXED_SIZE)
@@ -25,7 +25,7 @@ typedef int32_t fixed16; // Using 32-bit integer for fixed-point calculations
 #define INT_TO_FIXED(x) ((x) << FIXED_SIZE)
 
 // Converts a floating-point number to fixed-point format (avoid on integer-only CPUs)
-#define FLOAT_TO_FIXED(x) ((fixed16)((x) * FIXED_VAL))
+#define FLOAT_TO_FIXED(x) ((fixed16_t)((x) * FIXED_VAL))
 
 // Converts a fixed-point number to floating-point format (avoid on integer-only CPUs)
 #define FIXED_TO_FLOAT(x) ((float)(x) / FIXED_VAL)
