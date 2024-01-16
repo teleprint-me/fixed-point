@@ -1,55 +1,72 @@
-# Fixed-Point
+# Fixed-Point Arithmetic Library
 
 ## Overview
 
-The Fixed-Point is an educational project designed to help understand and implement fixed-point arithmetic in C and C++. Fixed-point arithmetic is a valuable technique for handling real-world applications that require precise numerical calculations without the overhead of floating-point operations.
+The Fixed-Point Arithmetic Library is a valuable resource for mastering and implementing fixed-point arithmetic in C and C++. This library excels in handling real-world applications that demand precise numerical computations while providing a more efficient alternative to floating-point operations.
 
-## Features
+## Key Features
 
-- Header file with fixed-point data types and arithmetic functions.
-- Example projects showcasing the use of fixed-point arithmetic.
-- MIT License for unrestricted educational and experimental use.
+- **Comprehensive Header File**: Equipped with essential fixed-point data types and arithmetic functions.
+- **Practical Examples**: Demonstrative projects showcasing the application and advantages of fixed-point arithmetic.
+- **MIT License**:  MIT License for unrestricted educational and experimental use.
 
 ## Getting Started
 
-1. Clone this repository to your local machine.
+1. **Clone the Repository**: Start by cloning the repository to your local machine:
 
-```sh
-git clone https://github.com/teleprint-me/fixed-point.git
-```
+    ```sh
+    git clone https://github.com/teleprint-me/fixed-point.git
+    ```
 
-2. Explore the `include` directory to find the fixed-point header file.
+2. **Explore the `fixed-point` Directory**: After cloning, navigate to the `fixed-point` directory. Here, you can find the header files in the `include` directory and example projects in the `examples` directory:
 
-```sh
-cd fixed-point
-```
+    ```sh
+    cd fixed-point
+    ls include
+    ls examples
+    ```
 
-3. Check out the example projects in the `examples` directory for practical usage.
+3. **Customize and Build**: Dive into the examples to understand how the library works. Feel free to modify and experiment with the code to fit your needs:
 
-```sh
-ls examples
-```
+    ```sh
+    vim examples
+    ```
 
-4. Feel free to experiment, modify, and build upon the provided code.
+## Building the Library
 
-```sh
-vim examples
-```
+1. **Review the Build Script**: Familiarize yourself with the `build.sh` script, which streamlines the library's compilation process.
+
+    ```sh
+    vim build.sh
+    ```
+
+2. **Compile the Library**: Execute the `build.sh` script to compile the library.
+
+    ```sh
+    ./build.sh
+    ```
+
+3. **Access Compiled Binaries**: Locate and run the compiled binaries.
+
+    ```sh
+    ls build/examples/
+    ./build/examples/float_to_fixed
+    ```
 
 ## Usage
 
-To include the fixed-point arithmetic header in your C/C++ project, simply add:
+Integrate the library into your C/C++ projects with ease:
 
 ```c
 #include "fixed_point.h"
 ```
 
-Make sure to review the documentation and examples for detailed usage instructions.
+For in-depth instructions on using the library effectively, refer to the accompanying documentation and examples.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project operates under the MIT License. Detailed licensing terms can be found in the [LICENSE](LICENSE) file.
 
 ## Contributing
 
-Contributions and improvements are welcome! If you have ideas, bug fixes, or optimizations to share, please open an issue or pull request.
+Contributions are highly encouraged! Feel free to contribute ideas, bug fixes, or enhancements by submitting issues and pull requests.
