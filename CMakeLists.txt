@@ -3,14 +3,27 @@ cmake_minimum_required(VERSION 3.12)
 # Project Name
 project(fixed_point)
 
-# Add executable targets for your examples
-add_executable(float_to_fixed examples/float_to_fixed.cpp)
-add_executable(fixed_arithmetic examples/fixed_arithmetic.cpp)
-add_executable(extract_sign_bit examples/extract_sign_bit.cpp)
-add_executable(extract_ieee_754 examples/extract_ieee_754.cpp)
+set(SOURCE_TARGETS
+    float_to_fixed
+    fixed_arithmetic
+    extract_sign_bit
+    extract_ieee_754
+)
 
-# Optionally set the output directories for the executables
-set_target_properties(float_to_fixed PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
-set_target_properties(fixed_arithmetic PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
-set_target_properties(extract_sign_bit PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
-set_target_properties(extract_ieee_754 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
+# Add executable targets for your examples
+foreach(target ${SOURCE_TARGETS})
+    add_executable(${target} examples/${target}.cpp)
+endforeach()
+
+# List of your executable targets
+set(EXECUTABLE_TARGETS
+    float_to_fixed
+    fixed_arithmetic
+    extract_sign_bit
+    extract_ieee_754
+)
+
+# Loop through the target names and set the output directory for each
+foreach(target ${EXECUTABLE_TARGETS})
+    set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
+endforeach()
