@@ -22,8 +22,7 @@ struct MetaFloat {
     int fraction;  // Bits 22-0: Mantissa (Fraction)
 };
 
-// Function to extract the sign bit from a float
-int extract_sign_bit(float float_value) {
+int extract_binary_representation(float float_value) {
     // Ensure that float and int have the same size for correct operation
     static_assert(sizeof(float) == sizeof(int), "Float and int must have the same size");
 
@@ -32,16 +31,22 @@ int extract_sign_bit(float float_value) {
     // Copy the bytes of the float into an integer for bit manipulation
     std::memcpy(&binary_representation, &float_value, sizeof(float));
 
+    return binary_representation;
+}
+
+// Function to extract the sign bit from a float
+int extract_sign_bit(float float_value) {
+    // Copy the bytes of the float into an integer for bit manipulation
+    int binary_representation = extract_binary_representation(float_value);
+
     // Isolate and return the sign bit using bitwise operations
     return (binary_representation >> 31) & 1;
 }
 
 // Function to extract the exponent bits from a float
 int extract_exponent_bits(float float_value) {
-    static_assert(sizeof(float) == sizeof(int), "Float and int must have the same size");
-
-    int binary_representation;
-    std::memcpy(&binary_representation, &float_value, sizeof(float));
+    // Copy the bytes of the float into an integer for bit manipulation
+    int binary_representation = extract_binary_representation(float_value);
 
     // Extract the exponent bits (bits 30-23) by masking and shifting
     return (binary_representation >> 23) & 0xFF; // Assuming 32-bit single-precision
@@ -49,10 +54,8 @@ int extract_exponent_bits(float float_value) {
 
 // Function to extract the mantissa bits from a float
 int extract_mantissa_bits(float float_value) {
-    static_assert(sizeof(float) == sizeof(int), "Float and int must have the same size");
-
-    int binary_representation;
-    std::memcpy(&binary_representation, &float_value, sizeof(float));
+    // Copy the bytes of the float into an integer for bit manipulation
+    int binary_representation = extract_binary_representation(float_value);
 
     // Extract the mantissa bits (bits 22-0) by masking
     return binary_representation & 0x7FFFFF; // Assuming 32-bit single-precision
