@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <bitset>
 
 // Define a struct to represent the components of a floating-point number
 // Assuming 32-bit IEEE 754 single-precision format
@@ -73,19 +74,22 @@ MetaFloat extract_float_metadata(float float_value) {
     return meta_float;
 }
 
+// Function to convert an integer to a binary string
+std::string to_binary_string(int value, int bits) {
+    return std::bitset<32>(value).to_string().substr(32 - bits);
+}
+
 int main() {
-    float my_float = 6.25f; // Specify the floating point number
+    float my_float = 6.25f;
 
-    // Initialize an instance of MetaFloat to store extracted components
-    MetaFloat meta_float;
+    // Extract all components of the floating-point number
+    MetaFloat meta_float = extract_float_metadata(my_float);
 
-    // Extract and store the sign bit
-    meta_float.sign = extract_sign_bit(my_float);
-
-    // Further extraction of exponent and fraction parts to be implemented
-
-    // Output the extracted sign for verification
-    std::cout << "Sign bit of " << my_float << ": " << meta_float.sign << std::endl;
+    // Output the extracted components for verification
+    std::cout << "Floating Point Representation of " << my_float << ":\n";
+    std::cout << "Sign Bit: " << meta_float.sign << " (Binary: " << to_binary_string(meta_float.sign, 1) << ")\n";
+    std::cout << "Exponent Bits: " << meta_float.exponent << " (Binary: " << to_binary_string(meta_float.exponent, 8) << ")\n";
+    std::cout << "Mantissa Bits: " << meta_float.fraction << " (Binary: " << to_binary_string(meta_float.fraction, 23) << ")\n";
 
     return 0;
 }
