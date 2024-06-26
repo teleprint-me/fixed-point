@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <math.h>
 
+#define PI 3.141592653589793f
+
 typedef union {
     float f;
     uint32_t bits;
@@ -31,7 +33,7 @@ void print_binary(uint32_t num) {
 }
 
 int main() {
-    float value = 3.14f;
+    float value = PI;
 
     // Encode the float into IEEE-754 binary32 representation
     uint32_t encoded = encode_float(value);
