@@ -107,13 +107,16 @@ int main() {
         -INFINITY,
         NAN,
         // Additional test cases outside of the range for half-precision format
-        1.0e+38f,                   // retuns inf
-        1.0e-40f,                   // zeroed out
-        (float) (1 << 31) + 1.0f,   // returns -inf
-        1.2f * (1 << 4),            // surprisingly accurate
-        (float) (1LL << 63),        // returns -inf
-        -(float) (1LL << 63),       // returns inf
-        (float) -((1LL << 58) | 1), // returns -inf
+        // 1.0e+38f should probably return inf or the highest value within range
+        1.0e+38f, // retuns inf (overflow)
+        // 1.0e-40f should probably return -inf or the lowest value
+        1.0e-40f,                   // zeroed out (underflow)
+                                    // within range)
+        (float) (1 << 31) + 1.0f,   // returns -inf (overflow)
+        1.2f * (1 << 4),            // surprisingly accurate  (precision loss)
+        (float) (1LL << 63),        // returns -inf (overflow)
+        -(float) (1LL << 63),       // returns inf (overflow)
+        (float) -((1LL << 58) | 1), // returns -inf (overflow)
     };
 
     size_t num_values = sizeof(test_values) / sizeof(test_values[0]);
