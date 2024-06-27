@@ -40,10 +40,6 @@ float decode_float(uint32_t bits) {
 /*
  * Convert a 32-bit floating-point number in IEEE single-precision format to a 16-bit floating-point
  * number in IEEE half-precision format, in bit representation.
- *
- * @note The implementation relies on IEEE-like (no assumption about rounding mode and no operations
- * on denormals) floating-point operations and bit casts between integer and floating-point
- * variables.
  */
 uint16_t encode_float16(float value) {
     // Use a uint32_t bit representation of the float values
@@ -85,10 +81,6 @@ uint16_t encode_float16(float value) {
 /*
  * Convert a 16-bit floating-point number in IEEE half-precision format to a 32-bit floating-point
  * number in IEEE single-precision format.
- *
- * @note The implementation relies on IEEE-like (no assumption about rounding mode and no operations
- * on denormals) floating-point operations and bitcasts between integer and floating-point
- * variables.
  */
 float decode_float16(uint16_t bits) {
     // Extend the half-precision number to 32 bits and shift to the upper part of the 32-bit word
@@ -131,7 +123,6 @@ void print_binary(uint32_t num) {
 }
 
 int main() {
-
     float value = PI;
 
     uint32_t ef32 = encode_float(value);
@@ -142,13 +133,13 @@ int main() {
     float df32 = decode_float(ef32);
     printf("float32_t decoded (float): %.8f\n", df32);
 
-    // Encode the float into IEEE-754 binary32 representation
-    uint32_t ef16 = encode_float16(value);
-    printf("float16_t encoded (hex): 0x%08X\n", ef16);
+    // Encode the float into IEEE-754 binary16 representation
+    uint16_t ef16 = encode_float16(value);
+    printf("float16_t encoded (hex): 0x%04X\n", ef16);
     printf("float16_t encoded (binary): ");
     print_binary(ef16);
 
-    // Decode the IEEE-754 binary32 representation back into a float
+    // Decode the IEEE-754 binary16 representation back into a float
     float df16 = decode_float16(ef16);
     printf("float16_t decoded (float): %.8f\n", df16);
 
