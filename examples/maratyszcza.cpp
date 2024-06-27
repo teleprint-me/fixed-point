@@ -47,42 +47,39 @@ float decode_float(uint32_t b) {
  * variables.
  */
 uint16_t encode_float16(float value) {
-    // use a uint32_t bit representation of the float values
+    // Use a uint32_t bit representation of the float values
 
-    // set the upper bound
-    const float scale_to_inf  = decode_float(UINT32_C(0x77800000));
-    // set the lower bound
-    const float scale_to_zero = decode_float(UINT32_C(0x08800000));
+    // Constants for scaling to handle large and small values
+    const float scale_to_inf  = decode_float(UINT32_C(0x77800000)); // Upper bound
+    const float scale_to_zero = decode_float(UINT32_C(0x08800000)); // Lower bound
 
-    // get the absolute value of input, scale, and push towards inf
+    // Saturate the input value towards infinity and scale back to half-precision range
     const float saturated_f = fabsf(value) * scale_to_inf;
-    // scale down to half precision range
     float       base        = saturated_f * scale_to_zero;
 
-    // set the 32-bit representation of the input as f
+    // Get the 32-bit representation of the input float
     const uint32_t f      = encode_float(value);
-    // shift f left by one bit (multiplied by 2)
-    const uint32_t shl1_f = f + f; // wondering if f << 1 is equivalent...
-    // extract the sign bit
+    // Shift left by one bit (equivalent to multiplying by 2)
+    const uint32_t shl1_f = f + f;
+    // Extract the sign bit
     const uint32_t sign   = f & UINT32_C(0x80000000);
-    // extract the exponent bits
+    // Extract the exponent bits and adjust for subnormal numbers
     uint32_t       bias   = shl1_f & UINT32_C(0xFF000000);
-    // adjust for subnormal numbers
     if (bias < UINT32_C(0x71000000)) {
         bias = UINT32_C(0x71000000);
     }
 
-    // adjust the base using the bias and convert back to float;
-    // seems to be the inverse operation of shl1_f for float16...
+    // Adjust the base using the bias and convert back to float
     base                         = decode_float((bias >> 1) + UINT32_C(0x07800000)) + base;
-    // 32-bit integer representation of the adjusted base
+    // Get the 32-bit integer representation of the adjusted base
     const uint32_t bits          = encode_float(base);
-    // extract bits for float16 (half-precision)
+    // Extract bits for half-precision format
     const uint32_t exp_bits      = (bits >> 13) & UINT32_C(0x00007C00);
     const uint32_t mantissa_bits = bits & UINT32_C(0x00000FFF);
-    // combine exponent and mantissa
+    // Combine exponent and mantissa bits
     const uint32_t nonsign       = exp_bits + mantissa_bits;
-    // return combined sign bit and half-precision; handle special cases like NaN and ±inf
+
+    // Return combined sign bit and half-precision; handle special cases like NaN and ±inf
     return (sign >> 16) | (shl1_f > UINT32_C(0xFF000000) ? UINT16_C(0x7E00) : nonsign);
 }
 
