@@ -5,7 +5,7 @@
 #define PI 3.141592653589793f
 
 // 32-bit floating point (standard float)
-typedef union Float32 {
+typedef union {
     uint32_t bits;
     float    value;
 } float32_t;
@@ -35,48 +35,88 @@ float decode_float(uint32_t bits) {
 
 // Function to encode a float into its IEEE-754 binary16 representation
 float16_t encode_float16(float value) {
-    // Convert float to 32-bit representation
-    const uint32_t w        = encode_float(value);
-    // Extract the sign bit and align it for 16-bit
-    const uint32_t sign     = (w & 0x80000000) >> 16;
-    // Extract the mantissa
-    const uint32_t mantissa = w & 0x007FFFFF;
-    // Extract exponent, adjust bias from 127 to 15
-    const int32_t  exp      = ((w & 0x7F800000) >> 23) - 127 + 15;
+    uint32_t w        = encode_float(value);
+    uint32_t sign     = (w & 0x80000000) >> 16;
+    int32_t  exp      = ((w & 0x7F800000) >> 23) - 127 + 15;
+    uint32_t mantissa = w & 0x007FFFFF;
 
     if (exp <= 0) {
-        // Handle subnormal numbers and zero
+        if (exp < -10) {
+            return (float16_t) sign; // too small, become zero
+        }
+        mantissa = (mantissa | 0x00800000) >> (1 - exp);
         return (float16_t) (sign | (mantissa >> 13));
-    } else if (exp >= 31) {
-        // Handle infinity and NaN
-        return (float16_t) (sign | 0x7C00 | (mantissa ? 0x200 : 0));
-    } else {
-        // Handle normal numbers
-        return (float16_t) (sign | (exp << 10) | (mantissa >> 13));
+    } else if (exp == 0xFF - (127 - 15)) {
+        if (mantissa == 0) {
+            return (float16_t) (sign | 0x7C00); // infinity
+        } else {
+            mantissa >>= 13;
+            return (float16_t) (sign | 0x7C00 | mantissa | (mantissa == 0)); // NaN
+        }
+    } else if (exp > 30) {
+        return (float16_t) (sign | 0x7C00); // too large, become infinity
     }
+
+    return (float16_t) (sign | (exp << 10) | (mantissa >> 13));
 }
 
-// Function to decode an IEEE-754 binary16 representation into a float
 float decode_float16(float16_t value) {
-    const uint32_t sign     = (value & 0x8000) << 16;
-    const uint32_t mantissa = (value & 0x03FF) << 13;
-    const int32_t  exp      = ((value & 0x7C00) >> 10) - 15 + 127;
+    uint32_t sign     = (value & 0x8000) << 16;
+    int32_t  exp      = (value & 0x7C00) >> 10;
+    uint32_t mantissa = (value & 0x03FF) << 13;
 
-    if (exp <= 0) {
-        // Handle subnormal numbers and zero
-        return decode_float(sign | mantissa);
-    } else if (exp >= 255) {
-        // Handle infinity and NaN
-        return decode_float(sign | 0x7F800000 | mantissa);
+    if (exp == 0) {
+        if (mantissa == 0) {
+            return decode_float(sign); // zero
+        }
+        exp = 1;
+        while (!(mantissa & 0x00800000)) {
+            mantissa <<= 1;
+            exp       -= 1;
+        }
+        mantissa &= 0x007FFFFF;
+    } else if (exp == 0x1F) {
+        if (mantissa == 0) {
+            return decode_float(sign | 0x7F800000); // infinity
+        } else {
+            return decode_float(sign | 0x7F800000 | mantissa); // NaN
+        }
     } else {
-        // Handle normal numbers
-        return decode_float(sign | (exp << 23) | mantissa);
+        exp += 127 - 15;
     }
+
+    uint32_t result = sign | (exp << 23) | mantissa;
+    return decode_float(result);
 }
 
 int main() {
-    float  test_values[] = {0.0f, 1.0f, -1.0f, PI, 65504.0f, 1.0e-40f, INFINITY, -INFINITY, NAN};
-    size_t num_values    = sizeof(test_values) / sizeof(test_values[0]);
+    // Anything above 1.0e-4f produces garbage output because of the limited precision
+    // This actually makes sense because the ranges are between 5 and -4 inclusive
+    // This would be an accurate representation of a 16-bit value.
+    // In range values produce garbage outputs when converted back to 32-bit
+    // Out of range values seem to be zeroed out.
+    float test_values[] = {
+        0.0f,
+        1.0f,
+        -1.0f,
+        PI,
+        65504.0f,
+        1.0e-4f,
+        1.23456789f,
+        INFINITY,
+        -INFINITY,
+        NAN,
+        // Additional test cases outside of the range for half-precision format
+        1.0e+38f,                   // retuns inf
+        1.0e-40f,                   // zeroed out
+        (float) (1 << 31) + 1.0f,   // returns -inf
+        1.2f * (1 << 4),            // surprisingly accurate
+        (float) (1LL << 63),        // returns -inf
+        -(float) (1LL << 63),       // returns inf
+        (float) -((1LL << 58) | 1), // returns -inf
+    };
+
+    size_t num_values = sizeof(test_values) / sizeof(test_values[0]);
 
     for (size_t i = 0; i < num_values; ++i) {
         float     value   = test_values[i];
