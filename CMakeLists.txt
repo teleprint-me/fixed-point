@@ -8,6 +8,8 @@ set(SOURCE_TARGETS
     fixed_arithmetic
     extract_sign_bit
     extract_ieee_754
+    simple_ieee_754
+    simple_half
 )
 
 # Add executable targets for your examples
@@ -21,6 +23,8 @@ set(EXECUTABLE_TARGETS
     fixed_arithmetic
     extract_sign_bit
     extract_ieee_754
+    simple_ieee_754
+    simple_half
 )
 
 # Loop through the target names and set the output directory for each
