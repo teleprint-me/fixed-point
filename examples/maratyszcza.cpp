@@ -18,11 +18,10 @@ typedef union {
 typedef uint16_t float16_t;
 
 uint32_t encode_float(float value);
-float    decode_float(uint32_t b);
+float    decode_float(uint32_t bits);
 
 float16_t encode_float16(float value);
-
-// float     decode_float16(float16_t b);
+float     decode_float16(float16_t bits);
 
 // Function to encode a float into its IEEE-754 binary32 representation
 uint32_t encode_float(float value) {
@@ -32,9 +31,9 @@ uint32_t encode_float(float value) {
 }
 
 // Function to decode an IEEE-754 binary32 representation into a float
-float decode_float(uint32_t b) {
+float decode_float(uint32_t bits) {
     float32_t f32;
-    f32.bits = b;
+    f32.bits = bits;
     return f32.value;
 }
 
@@ -43,7 +42,7 @@ float decode_float(uint32_t b) {
  * number in IEEE half-precision format, in bit representation.
  *
  * @note The implementation relies on IEEE-like (no assumption about rounding mode and no operations
- * on denormals) floating-point operations and bitcasts between integer and floating-point
+ * on denormals) floating-point operations and bit casts between integer and floating-point
  * variables.
  */
 uint16_t encode_float16(float value) {
@@ -83,6 +82,43 @@ uint16_t encode_float16(float value) {
     return (sign >> 16) | (shl1_f > UINT32_C(0xFF000000) ? UINT16_C(0x7E00) : nonsign);
 }
 
+/*
+ * Convert a 16-bit floating-point number in IEEE half-precision format to a 32-bit floating-point
+ * number in IEEE single-precision format.
+ *
+ * @note The implementation relies on IEEE-like (no assumption about rounding mode and no operations
+ * on denormals) floating-point operations and bitcasts between integer and floating-point
+ * variables.
+ */
+float decode_float16(uint16_t bits) {
+    // Extend the half-precision number to 32 bits and shift to the upper part of the 32-bit word
+    const uint32_t f      = (uint32_t) bits << 16;
+    // Extract the sign of the input number
+    const uint32_t sign   = f & UINT32_C(0x80000000);
+    // Shift left by one bit (equivalent to multiplying by 2)
+    const uint32_t shl1_f = f + f;
+
+    // Constants for exponent adjustment and scaling
+    const uint32_t exp_offset       = UINT32_C(0xE0) << 23;
+    const float    exp_scale        = decode_float(UINT32_C(0x7800000));
+    // Convert normalized half-precision number to single-precision
+    const float    normalized_value = decode_float((shl1_f >> 4) + exp_offset) * exp_scale;
+
+    // Constants for handling denormalized numbers and zeros
+    const uint32_t magic_mask         = UINT32_C(126) << 23;
+    const float    magic_bias         = 0.5f;
+    // Convert denormalized half-precision number to single-precision
+    const float    denormalized_value = decode_float((shl1_f >> 17) | magic_mask) - magic_bias;
+
+    // Determine if the input is denormalized or zero
+    const uint32_t denormalized_cutoff = UINT32_C(1) << 27;
+    // Combine the result of conversion with the sign of the input number
+    const uint32_t result              = sign
+                            | (shl1_f < denormalized_cutoff ? encode_float(denormalized_value)
+                                                            : encode_float(normalized_value));
+    return decode_float(result);
+}
+
 // Function to print the binary representation of a 32-bit number
 void print_binary(uint32_t num) {
     for (int i = 31; i >= 0; i--) {
@@ -107,14 +143,14 @@ int main() {
     printf("float32_t decoded (float): %.8f\n", df32);
 
     // Encode the float into IEEE-754 binary32 representation
-    uint32_t f16 = encode_float16(value);
-    printf("Encoded (hex): 0x%08X\n", f16);
-    printf("Encoded (binary): ");
-    print_binary(f16);
+    uint32_t ef16 = encode_float16(value);
+    printf("float16_t encoded (hex): 0x%08X\n", ef16);
+    printf("float16_t encoded (binary): ");
+    print_binary(ef16);
 
     // Decode the IEEE-754 binary32 representation back into a float
-    // float decoded = decode_float16(encoded);
-    // printf("Decoded (float): %.8f\n", decoded);
+    float df16 = decode_float16(ef16);
+    printf("float16_t decoded (float): %.8f\n", df16);
 
     return 0;
 }
