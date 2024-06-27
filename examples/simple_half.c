@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define PI 3.141592653589793f
 
@@ -35,7 +36,7 @@ float decode_float(uint32_t bits) {
 // Function to encode a float into its IEEE-754 binary16 representation
 float16_t encode_float16(float value) {
     // Convert float to 32-bit representation
-    const uint32_t w        = fp32_to_bits(value);
+    const uint32_t w        = encode_float(value);
     // Extract the sign bit and align it for 16-bit
     const uint32_t sign     = (w & 0x80000000) >> 16;
     // Extract the mantissa
@@ -71,4 +72,19 @@ float decode_float16(float16_t value) {
         // Handle normal numbers
         return decode_float(sign | (exp << 23) | mantissa);
     }
+}
+
+int main() {
+    float  test_values[] = {0.0f, 1.0f, -1.0f, PI, 65504.0f, 1.0e-40f, INFINITY, -INFINITY, NAN};
+    size_t num_values    = sizeof(test_values) / sizeof(test_values[0]);
+
+    for (size_t i = 0; i < num_values; ++i) {
+        float     value   = test_values[i];
+        float16_t encoded = encode_float16(value);
+        float     decoded = decode_float16(encoded);
+
+        printf("Original: %f, Encoded: 0x%04X, Decoded: %f\n", value, encoded, decoded);
+    }
+
+    return 0;
 }
