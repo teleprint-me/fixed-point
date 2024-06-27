@@ -1,3 +1,5 @@
+docs/
+
 # CMake build directories
 /build/
 /CMakeFiles/
