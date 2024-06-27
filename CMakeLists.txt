@@ -10,6 +10,7 @@ set(SOURCE_TARGETS
     extract_ieee_754
     simple_ieee_754
     simple_half
+    maratyszcza
 )
 
 # Add executable targets for your examples
@@ -25,6 +26,7 @@ set(EXECUTABLE_TARGETS
     extract_ieee_754
     simple_ieee_754
     simple_half
+    maratyszcza
 )
 
 # Loop through the target names and set the output directory for each
