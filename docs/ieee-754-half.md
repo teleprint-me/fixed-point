@@ -1,5 +1,4 @@
 # IEEE-754 Floating Point Conversion Utility
-
 ## Overview
 This utility provides functions to encode and decode floating-point numbers between IEEE-754 32-bit (single-precision) and 16-bit (half-precision) formats. The main functions are:
 - `encode_float`: Encodes a float to its IEEE-754 binary32 representation.
@@ -66,7 +65,6 @@ int main() {
 ```
 
 ## Detailed Description
-
 ### Encoding a 32-bit Float
 ```c
 uint32_t encode_float(float value) {
@@ -88,7 +86,6 @@ float decode_float(uint32_t bits) {
 Similar to `encode_float`, this function uses a union to convert a 32-bit integer representation back to a float.
 
 ## Encoding a 16-bit Float
-
 ### Function Overview
 The `encode_float16` function converts a 32-bit floating-point number in IEEE-754 single-precision format to a 16-bit floating-point number in IEEE-754 half-precision format.
 
@@ -120,9 +117,7 @@ uint16_t encode_float16(float value) {
 ```
 
 #### Detailed Breakdown
-
 1. **Scaling Constants**
-
    ```c
    const float scale_to_inf  = decode_float(UINT32_C(0x77800000)); // Upper bound
    const float scale_to_zero = decode_float(UINT32_C(0x08800000)); // Lower bound
@@ -131,7 +126,6 @@ uint16_t encode_float16(float value) {
    These constants are used for scaling large and small values to fit into the half-precision format range. They are derived from specific bit patterns that represent large and small floating-point numbers.
 
 2. **Saturate and Scale**
-
    ```c
    const float saturated_f = fabsf(value) * scale_to_inf;
    float base = saturated_f * scale_to_zero;
@@ -140,7 +134,6 @@ uint16_t encode_float16(float value) {
    The absolute value of the input is multiplied by `scale_to_inf` to handle very large values, and then by `scale_to_zero` to bring it back into a manageable range for half-precision.
 
 3. **Bit Manipulation and Extraction**
-
    ```c
    const uint32_t f = encode_float(value);
    const uint32_t shl1_f = f + f;
@@ -150,7 +143,6 @@ uint16_t encode_float16(float value) {
    The input float is encoded into its 32-bit IEEE-754 representation. The value is then shifted left by one bit (equivalent to multiplying by 2). The sign bit is extracted separately.
 
 4. **Bias Adjustment**
-
    ```c
    uint32_t bias = shl1_f & UINT32_C(0xFF000000);
    if (bias < UINT32_C(0x71000000)) {
@@ -161,7 +153,6 @@ uint16_t encode_float16(float value) {
    The exponent bits are extracted and adjusted for subnormal numbers. If the exponent is less than a threshold, it is set to a minimum value to handle denormals.
 
 5. **Base Adjustment and Encoding**
-
    ```c
    base = decode_float((bias >> 1) + UINT32_C(0x07800000)) + base;
    const uint32_t bits = encode_float(base);
@@ -170,7 +161,6 @@ uint16_t encode_float16(float value) {
    The base is adjusted using the bias and then encoded back to a 32-bit float. This adjusted base accounts for the correct exponent range for half-precision.
 
 6. **Extracting Half-Precision Bits**
-
    ```c
    const uint32_t exp_bits = (bits >> 13) & UINT32_C(0x00007C00);
    const uint32_t mantissa_bits = bits & UINT32_C(0x00000FFF);
@@ -180,7 +170,6 @@ uint16_t encode_float16(float value) {
    The exponent and mantissa bits are extracted and combined to form the half-precision representation. The bits are shifted and masked appropriately to fit the half-precision format.
 
 7. **Combining Sign and Returning Result**
-
    ```c
    return (sign >> 16) | (shl1_f > UINT32_C(0xFF000000) ? UINT16_C(0x7E00) : nonsign);
    ```
@@ -190,7 +179,6 @@ uint16_t encode_float16(float value) {
 The `encode_float16` function converts a 32-bit single-precision float to a 16-bit half-precision float through bit manipulation and scaling, ensuring that the representation fits within the constraints of the half-precision format. This process involves handling subnormal numbers, adjusting the exponent bias, and properly encoding the mantissa.
 
 ## Decoding a 16-bit Float
-
 ### Function Overview
 The `decode_float16` function converts a 16-bit floating-point number in IEEE-754 half-precision format to a 32-bit floating-point number in IEEE-754 single-precision format.
 
@@ -218,7 +206,6 @@ float decode_float16(uint16_t bits) {
 ```
 
 #### Detailed Breakdown
-
 1. **Bit Extension and Extraction**
    ```c
    const uint32_t f = (uint32_t) bits << 16;
@@ -271,7 +258,6 @@ float decode_float16(uint16_t bits) {
 The `decode_float16` function converts a 16-bit half-precision float to a 32-bit single-precision float by extending the bit representation, handling normalization and denormalization, and adjusting the exponent and mantissa. This process ensures that the half-precision value is correctly represented in the single-precision format.
 
 ### Conclusion
-
 This example provides a comprehensive approach to converting floating-point numbers between IEEE-754 single-precision and half-precision formats. The functions utilize bit manipulation and scaling to ensure accurate conversion while handling special cases like infinity and denormalized numbers.
 
 ### References
