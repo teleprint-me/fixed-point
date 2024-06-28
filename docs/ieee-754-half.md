@@ -89,7 +89,7 @@ Similar to `encode_float`, this function uses a union to convert a 32-bit intege
 
 ## Encoding a 16-bit Float
 
-#### Function Overview
+### Function Overview
 The `encode_float16` function converts a 32-bit floating-point number in IEEE-754 single-precision format to a 16-bit floating-point number in IEEE-754 half-precision format.
 
 #### Code
@@ -189,32 +189,90 @@ uint16_t encode_float16(float value) {
 
 The `encode_float16` function converts a 32-bit single-precision float to a 16-bit half-precision float through bit manipulation and scaling, ensuring that the representation fits within the constraints of the half-precision format. This process involves handling subnormal numbers, adjusting the exponent bias, and properly encoding the mantissa.
 
-#### Decoding a 16-bit Float
+## Decoding a 16-bit Float
+
+### Function Overview
+The `decode_float16` function converts a 16-bit floating-point number in IEEE-754 half-precision format to a 32-bit floating-point number in IEEE-754 single-precision format.
+
+#### Code
 ```c
 float decode_float16(uint16_t bits) {
     const uint32_t f      = (uint32_t) bits << 16;
     const uint32_t sign   = f & UINT32_C(0x80000000);
     const uint32_t shl1_f = f + f;
 
-    const uint32_t exp_offset = UINT32_C(0xE0) << 23;
-    const float    exp_scale = decode_float(UINT32_C(0x7800000));
+    const uint32_t exp_offset       = UINT32_C(0xE0) << 23;
+    const float    exp_scale        = decode_float(UINT32_C(0x7800000));
     const float    normalized_value = decode_float((shl1_f >> 4) + exp_offset) * exp_scale;
 
-    const uint32_t magic_mask = UINT32_C(126) << 23;
-    const float    magic_bias = 0.5f;
+    const uint32_t magic_mask         = UINT32_C(126) << 23;
+    const float    magic_bias         = 0.5f;
     const float    denormalized_value = decode_float((shl1_f >> 17) | magic_mask) - magic_bias;
 
     const uint32_t denormalized_cutoff = UINT32_C(1) << 27;
-    const uint32_t result = sign
+    const uint32_t result              = sign
                             | (shl1_f < denormalized_cutoff ? encode_float(denormalized_value)
                                                             : encode_float(normalized_value));
     return decode_float(result);
 }
 ```
-This function handles the conversion of a half-precision float back to single-precision by scaling, bias adjustment, and bit manipulation.
+
+#### Detailed Breakdown
+
+1. **Bit Extension and Extraction**
+   ```c
+   const uint32_t f = (uint32_t) bits << 16;
+   const uint32_t sign = f & UINT32_C(0x80000000);
+   const uint32_t shl1_f = f + f;
+   ```
+   The 16-bit half-precision number is extended to 32 bits by shifting left by 16 bits. The sign bit is extracted, and the value is shifted left by one bit (equivalent to multiplying by 2).
+
+2. **Constants for Exponent Adjustment and Scaling**
+   ```c
+   const uint32_t exp_offset = UINT32_C(0xE0) << 23;
+   const float exp_scale = decode_float(UINT32_C(0x7800000));
+   ```
+   These constants are used to adjust the exponent and scale the normalized value to fit the single-precision range.
+
+3. **Convert Normalized Half-Precision to Single-Precision**
+   ```c
+   const float normalized_value = decode_float((shl1_f >> 4) + exp_offset) * exp_scale;
+   ```
+   The shifted value `shl1_f` is adjusted and scaled to convert the normalized half-precision number to single-precision.
+
+4. **Constants for Handling Denormalized Numbers and Zeros**
+   ```c
+   const uint32_t magic_mask = UINT32_C(126) << 23;
+   const float magic_bias = 0.5f;
+   ```
+   These constants are used to handle denormalized numbers and zeros in the half-precision format.
+
+5. **Convert Denormalized Half-Precision to Single-Precision**
+   ```c
+   const float denormalized_value = decode_float((shl1_f >> 17) | magic_mask) - magic_bias;
+   ```
+   The shifted value `shl1_f` is adjusted and masked to convert the denormalized half-precision number to single-precision.
+
+6. **Determine if Input is Denormalized or Zero**
+   ```c
+   const uint32_t denormalized_cutoff = UINT32_C(1) << 27;
+   ```
+   This constant is used to determine if the input is denormalized or zero.
+
+7. **Combine Result and Return**
+   ```c
+   const uint32_t result = sign
+                            | (shl1_f < denormalized_cutoff ? encode_float(denormalized_value)
+                                                            : encode_float(normalized_value));
+   return decode_float(result);
+   ```
+   The sign bit is combined with either the normalized or denormalized value, depending on whether the input is denormalized or zero. The result is then decoded back to a 32-bit float and returned.
+
+The `decode_float16` function converts a 16-bit half-precision float to a 32-bit single-precision float by extending the bit representation, handling normalization and denormalization, and adjusting the exponent and mantissa. This process ensures that the half-precision value is correctly represented in the single-precision format.
 
 ### Conclusion
-This utility provides a comprehensive approach to converting floating-point numbers between IEEE-754 single-precision and half-precision formats. The functions utilize bit manipulation and scaling to ensure accurate conversion while handling special cases like infinity and denormalized numbers.
+
+This example provides a comprehensive approach to converting floating-point numbers between IEEE-754 single-precision and half-precision formats. The functions utilize bit manipulation and scaling to ensure accurate conversion while handling special cases like infinity and denormalized numbers.
 
 ### References
 - IEEE-754 Standard for Floating-Point Arithmetic: [Link](https://ieeexplore.ieee.org/document/8766229)
