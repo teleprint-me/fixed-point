@@ -6,13 +6,10 @@ if [ -d "$build_dir" ]; then
   echo "Cleaning existing build directory..."
   rm -r "$build_dir" || exit 1
 fi
-mkdir "$build_dir" || exit 1
-
-# Navigate to the build directory
-cd "$build_dir" || exit 1
+cmake -B build -DCMAKE_BUILD_TYPE=Debug || exit 1
 
 # Run CMake and build the project
-if cmake .. && make; then
+if cmake --build build -j 8; then
   echo "Build successful!"
   exit 0
 else
