@@ -11,6 +11,7 @@ set(SOURCE_TARGETS
     simple_ieee_754
     simple_half
     maratyszcza
+    google_bfloat
 )
 
 # Add executable targets for your examples
@@ -27,6 +28,7 @@ set(EXECUTABLE_TARGETS
     simple_ieee_754
     simple_half
     maratyszcza
+    google_bfloat
 )
 
 # Loop through the target names and set the output directory for each
