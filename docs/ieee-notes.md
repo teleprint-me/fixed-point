@@ -1,16 +1,14 @@
 # IEEE-754 Notes
 
-## Floating-point binary formats
+## Floating-Point Binary Formats
 
-Five basic formats are defined, but we focus on 3 binary formats while exluding the decimal formats as they are out of scope for this document.
+IEEE-754 defines five basic formats, but this document will focus on three binary formats, excluding the decimal formats as they are out of scope.
 
-- The three binary formats defined by IEEE-754 have a length of 32, 64, and 128-bit formats.
+- The three primary binary formats defined by IEEE-754 are 32-bit, 64-bit, and 128-bit.
 
-According to the specification, we can extend these formats. The specifications include a 16-bit which is officially defined, but I've also taken the time to include Google Brain float as we a custom 8-bit float implementation.
+The specification also allows for extended formats. In addition to the standard formats, this document will include the 16-bit format, Google Brain float (B16), and a custom 8-bit float implementation for computational efficiency.
 
-- This document will include 16, brain 16, and 8-bit formats for computational efficiency.
-
-This document will primarily focus on 32, 16, B16, and 8-bit float representations. Some examples may include 64 bit representations for visual comparison and added contextual clarity.
+- This document will cover 32-bit, 16-bit, B16, and 8-bit float representations. Some examples may include 64-bit representations for visual comparison and added contextual clarity.
 
 ### Conformance
 
