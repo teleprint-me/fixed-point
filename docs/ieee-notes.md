@@ -1,16 +1,18 @@
-# IEEE-754 Notes
+# Notes for Floating-point Precision
 
 ## Floating-Point Binary Formats
 
 IEEE-754 defines five basic formats, but this document will focus on three binary formats, excluding the decimal formats as they are out of scope.
 
-- Primary binary formats: 32-bit, 64-bit, and 128-bit.
+- **Primary binary formats**: 32-bit, 64-bit, and 128-bit.
 
 The specification allows for extended formats, including a 16-bit format, Google Brain float (B16), and a custom 8-bit float for computational efficiency.
 
-- Covered formats: 32-bit, 16-bit, B16, and 8-bit. Examples may include 64-bit for visual comparison and context.
+- **Covered formats**: 32-bit, 16-bit, B16, and 8-bit. Examples may include 64-bit for visual comparison and context.
 
-### Specification Conformance
+## Specification
+
+### Conformance
 
 - Provide methods to initialize, encode, decode, and free information.
 
@@ -21,7 +23,7 @@ Other conformance options, typically hardware/language dependent:
 
 The last three points may be redundant as base 2, 10, and 16 are all utilized.
 
-## Specification Levels
+### Levels
 
 Four levels defined by the specification:
 
@@ -41,7 +43,7 @@ Four levels defined by the specification:
 
    Encodes floating-point data in a specific format, potentially mapping multiple representations to the same bit string or vice versa.
 
-### Floating-Point Representation
+## Floating-Point Representation
 
 Representations can consist of:
 
@@ -56,16 +58,16 @@ Representations can consist of:
 - **$\text{qNaN} \cup \text{sNaN}$**:
   - NaNs represent invalid operations or undefined quantities. qNaN for indeterminate results, sNaN for exceptional conditions that may trigger an interrupt/exception.
 
-## Set of Representable Numbers
+### Set of Representable Numbers
 
-Defined as a finite set of floating-point numbers within a format. Parameters: $b$, $p$, $max(e)$, and $min(e)$.
+Defined as a finite set of floating-point numbers within a format. Parameters: $b$, $p$, $e_{max}$, and $e_{min}$.
 
-- Base ($b$), precision ($p$), maximum exponent ($max(e)$), minimum exponent ($min(e) = 1 - max(e)$).
+- Base ($b$), precision ($p$), maximum exponent ($e_{max}$), minimum exponent ($e_{min} = 1 - e_{max}$).
 
-- $b = 2$ or $b = 10$ (base)
-- $p = len(m)$ (number of significand digits)
-- $max(e) = max(e)$
-- $min(e) = min(e) = 1 - max(e)$
+- $b = 2$ (use binary base)
+- $p = \text{len}(m)$ (number of significand digits)
+- $e_{max} = \text{len}(e) - 1$ (one less than the number of exponent digits)
+- $e_{min} = 1 - e_{max}$ (one more than the additive inverse of $e_{max}$)
 
 Each format is identified by its base and the number of bits in its encoding.
 
@@ -75,20 +77,20 @@ This section expands on the floating-point representation, taking the formatted 
 
 - **$(s, e, m)$ in radix $b$ (base)**: $(-1)^s \times b^e \times m$
   - $s$: sign (0 or 1)
-  - $e$: exponent ($\min(e) \le e \le \max(e)$)
+  - $e$: exponent ($\text{e}_{min} \le e \le \text{e}_{max}$)
   - $m$: mantissa (significand) is $d_0 \cdot d_1 \cdot d_2 \cdot \dots \cdot d_{p-1}$
   - $\{\pm\infty\}$: the upper and lower bounds for a set including infinity
   - $NaN$: $qNaN$ (Quiet NaN) and $sNaN$ (Signaling NaN)
 
 These are the only data representations available.
 
-### Relationship Between Views
+## Integer Representation: Relationship Between Views
 
 In the previous description, the significand $m$ is viewed in a scientific form, with the radix point immediately following the first digit. For certain purposes, it’s convenient to view the significand as an integer $c$. The finite floating-point numbers can then be described as follows:
 
 - **Signed Zero and Non-Zero Floating-Point Numbers**: In the form $(-1)^s \times b^q \times c$, where:
   - $s$ is 0 or 1 (sign).
-  - $q$ is an integer such that $\text{min(e)} \le q + (p - 1) \le \text{max(e)}$.
+  - $q$ is an integer such that $e_{min} \le q + (p - 1) \le e_{max}$.
   - $c$ is an integer represented by a digit string $d_0 d_1 d_2 \dots d_{p-1}$, where each digit $d_i $ is an integer $0 \le d_i < b$, meaning $c$ satisfies $0 \le c < b^p$.
 
 This integer representation of the significand $c$ and its corresponding exponent $q$ describe exactly the same set of floating-point numbers as the scientific form. For finite floating-point numbers, the relationships are:
@@ -113,13 +115,13 @@ The distinction between $c$ and $m$ lies in how the significand is represented a
 ### Relationship and Conversion
 
 Both representations describe the same set of floating-point numbers, but they are formatted differently for different purposes.
+  - **$p$ is the precision**: The number of digits in the significand.
 
 - **Conversion from $c$ to $m$**:
   - $m = c \times b^{1 - p}$
-  - Here, $p$ is the precision, or the number of digits in the significand.
 
 - **Conversion from $m$ to $c$**:
-  - $c = m \times b^{p - 1}$
+  - $c = \frac{m}{b^{p - 1}}$
 
 ### Example to Illustrate
 
@@ -136,45 +138,41 @@ Let’s consider a simple example with a base $b = 10$ and precision $p = 3$:
 
 So, while $m$ and $c$ represent the same underlying value, $m$ includes the radix point in a fractional form, and $c$ is an integer form used for certain computational efficiencies.
 
-### Determining the Range
+## Calculating $e_{\text{max}}$
 
 - The smallest positive normal floating-point number is $b^{e_{min}}$.
 - The largest is $b^{e_{max}} \times (b - b^{1 - p})$.
 - Subnormal numbers have magnitudes less than $b^{e_{min}}$ and fewer than $p$ significant digits.
 
-### Representing Zero and Infinity
-
-- Zero: Both +0 and -0 have distinct representations and significance in operations like division by zero.
-- Infinity: Represented without a sign when the sign is not important.
-
 ### Parameters for Common Formats
+
+#### 32-bit (Single-precision)
+
+- **Total bits**: 32
+- **Sign bit**: 1 bit
+- **Exponent bits**: 8 bits (bias = 127)
+- **Significand (Mantissa)**: 23 bits
+
+#### BFloat16 (Google Brain float)
+
+- **Total bits**: 16
+- **Sign bit**: 1 bit
+- **Exponent bits**: 8 bits (bias = 127)
+- **Significand (Mantissa)**: 7 bits
 
 #### 16-bit (Half-precision)
 
 - **Total bits**: 16
 - **Sign bit**: 1 bit
-- **Exponent bits**: 5 bits
-- **Significand bits**: 10 bits
+- **Exponent bits**: 5 bits (bias = 15)
+- **Significand (Mantissa)**: 10 bits
 
-#### B16 (Brain-precision, custom format)
-
-- **Total bits**: 16
-- **Sign bit**: 1 bit
-- **Exponent bits**: 8 bits
-- **Significand bits**: 7 bits
-
-#### 8-bit (Quarter-precision, custom format)
+#### 8-bit (Quarter-precision)
 
 - **Total bits**: 8
 - **Sign bit**: 1 bit
-- **Exponent bits**: 3 bits
-- **Significand bits**: 4 bits
-
-#### Calculation of $e_{max}$
-
-For a given format, the maximum exponent value ($e_{max}$) is determined as follows:
-
-$e_{max} = 2^{(\text{exponent bits} - 1)} - 1$
+- **Exponent bits**: 4 bits (bias = 7)
+- **Significand (Mantissa)**: 3 bits
 
 ### Parameters for Common Formats
 
@@ -182,38 +180,6 @@ $e_{max} = 2^{(\text{exponent bits} - 1)} - 1$
 | ----------- | ----- | ------ | ---- | ------ | ------ | ------- |
 | $p$, digits | 4     | 11     | 7    | 24     | 53     | 113     |
 | $e_{max}$   | +3    | +15    | +127 | +127   | +1023  | +16383  |
-
-### Explanation
-
-- **8-bit format**: 
-  - $p$ (digits) = 4 (significand bits)
-  - Exponent bits = 3
-  - $e_{max} = 2^{(3 - 1)} - 1 = 3$
-
-- **16-bit format**: 
-  - $p$ (digits) = 11 (significand bits)
-  - Exponent bits = 5
-  - $e_{max} = 2^{(5 - 1)} - 1 = 15$
-
-- **B16 format**: 
-  - $p$ (digits) = 7 (significand bits)
-  - Exponent bits = 8
-  - $e_{max} = 2^{(8 - 1)} - 1 = 127$
-
-- **32-bit format**: 
-  - $p$ (digits) = 24 (significand bits)
-  - Exponent bits = 8
-  - $e_{max} = 2^{(8 - 1)} - 1 = 127$
-
-- **64-bit format**: 
-  - $p$ (digits) = 53 (significand bits)
-  - Exponent bits = 11
-  - $e_{max} = 2^{(11 - 1)} - 1 = 1023$
-
-- **128-bit format**: 
-  - $p$ (digits) = 113 (significand bits)
-  - Exponent bits = 15
-  - $e_{max} = 2^{(15 - 1)} - 1 = 16383$
 
 ### Outline for Common Precision Formats
 
@@ -224,3 +190,54 @@ $e_{max} = 2^{(\text{exponent bits} - 1)} - 1$
 | B16-bit   | 0        | 0000 0000     | 0000 000                                                         |
 | 16-bit    | 0        | 0000 0        | 0000 0000 00                                                     |
 | 8-bit     | 0        | 000           | 0000                                                             |
+
+## Calculating $e_{\text{min}}$
+
+In floating-point representation, $e_{\text{min}}$ refers to the minimum exponent value allowed for normalized floating-point numbers within a specific format. It is directly related to $e_{\text{max}}$, the maximum exponent value, through the formula:
+
+$e_{\text{min}} = 1 - e_{\text{max}}$
+
+where:
+- $e_{\text{max}}$ is the maximum exponent value determined by the number of exponent bits available in the format.
+
+### Example Calculation
+
+For example, consider a format with $e_{\text{max}} = 127$ (common in IEEE-754 single precision):
+
+$e_{\text{min}} = 1 - 127 = -126$
+
+Therefore, $e_{\text{min}}$ for this format would be \(-126\).
+
+### Significance
+
+Understanding $e_{\text{min}}$ is crucial for determining the range of exponents available within a floating-point format. It defines the smallest exponent value that can be represented for normalized numbers, ensuring both positive and negative ranges are adequately covered by the format.
+
+### Representing Zero and Infinity
+
+- Zero: Both +0 and -0 have distinct representations and significance in operations like division by zero.
+- Infinity: Represented without a sign when the sign is not important.
+
+### Example of an IEEE-754 Conversion
+
+Let’s convert the decimal number 13.25 to IEEE-754 32-bit format:
+
+1. **Convert to binary**: 13.25 in binary is 1101.01.
+2. **Normalize**: 1.10101 × 2^3.
+3. **Set sign bit**: 0 (positive number).
+4. **Calculate exponent**: 3 + 127 (bias) = 130.
+5. **Encode significand**: 10101000000000000000000 (23 bits).
+
+### Converting Binary to IEEE-754
+
+1. **Identify components**: Determine the sign, exponent, and mantissa from the binary string.
+2. **Calculate decimal value**: Combine the components to reconstruct the decimal value.
+
+### Example of a 16-bit BFloat Conversion
+
+Let's convert 1.5 to BFloat16:
+
+1. **Convert to binary**: 1.5 in binary is 1.1.
+2. **Normalize**: 1.1 × 2^0.
+3. **Set sign bit**: 0 (positive number).
+4. **Calculate exponent**: 0 + 127 (bias) = 127.
+5. **Encode significand**: 1000000 (7 bits).
