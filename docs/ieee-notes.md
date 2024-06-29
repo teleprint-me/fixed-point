@@ -10,7 +10,7 @@ The specification also allows for extended formats. In addition to the standard 
 
 - This document will cover 32-bit, 16-bit, B16, and 8-bit float representations. Some examples may include 64-bit representations for visual comparison and added contextual clarity.
 
-### Conformance
+### Specification conformance
 
 - We need to provide a way to initialize, encode, decode, and free the information.
 
@@ -24,20 +24,47 @@ The last three points seem superfluous, especially considering that base 2, 10, 
 
 ## Specification levels
 
-There are 4 levels defined by the specification.
+There are 4 levels defined by the specification:
 
-1. Extended real numbers, e.g. $\{-\infty \dots 0 \dots +\infty\}$
+1. **Extended Real Numbers**: $\{-\infty, \dots, 0, \dots, +\infty\}$
 
-    The extended real numbers ($\mathbb{R}$), which include positive and negative infinity, represent all possible results that can be obtained through mathematical operations on real numbers using rounding to approximate them as finite floating-point values.
+   Extended real numbers ($\mathbb{R}$) encompass all possible results obtained through mathematical operations on real numbers, approximated as finite floating-point values.
 
-2. Floating-point data, e.g. $\{-∞ \dots +∞\} \cup \{-∞, +∞\} \cup qNaN \cup sNaN$
+2. **Floating-Point Data**: $\{-\infty, \dots, +\infty\} \cup \{-\infty, +\infty\} \cup \text{qNaN} \cup \text{sNaN}$
 
-    Floating-point data is an algebraically closed system consisting of signed zeros, nonzero finite numbers (both positive and negative), infinities, and NaNs. This level represents a many-to-one mapping from the extended real numbers to floating-point data due to rounding errors.
+   Floating-point data form an algebraically closed system including signed zeros, nonzero finite numbers (both positive and negative), infinities, and NaNs. This level represents a many-to-one mapping from extended real numbers due to rounding errors.
 
-3. Float-point representation, e.g. $(s, e, m) \cup \{-∞, +∞\} \cup qNaN \cup sNaN$
+3. **Floating-Point Representation**: $(s, e, m) \cup \{-\infty, +\infty\} \cup \text{qNaN} \cup \text{sNaN}$
 
-    Representations of floating-point data consist of sign ($s$), exponent ($e$), and mantissa ($m$, aka the significand), along with positive infinity ($), negative infinity, QuietNaN (qNaN), and SignalNaN (sNaN). This level provides a one-to-many mapping from floating-point data to their representations due to different encodings.
+   Representations of floating-point data include sign ($s$), exponent ($e$), mantissa ($m$, also known as significand), along with positive infinity, negative infinity, QuietNaN (qNaN), and SignalingNaN (sNaN). This level provides a one-to-many mapping from floating-point data to their representations due to different encodings.
 
-4. Bit-string representation, e.g. $1010 1100$
+4. **Bit-String Representation**: $1010 \ 1100$
 
-    Bit strings represent the encoding of each representation of floating-point data in a specific format, which might map multiple representations to the same bit string or vice versa.
+   Bit-string representation encodes each representation of floating-point data in a specific format, potentially mapping multiple representations to the same bit string or vice versa.
+
+### Floating-point representation
+
+Representations can consist of:
+
+- **$(s, e, m)$ in Radix (Base) $b$**: Expressed as $(-1)^s \times b^e \times m$,
+  
+  where:
+  - $s$ is the sign,
+  - $e$ is the exponent,
+  - $m$ is the mantissa (also known as the significand).
+
+- **$\{-\infty, +\infty\}$**: 
+
+  The mathematical basis of IEEE-754 includes the extended reals, which encompass real numbers along with positive and negative infinity.
+
+- **$\text{qNaN} \cup \text{sNaN}$**:
+
+  NaN (Not-a-Number) values are used to represent results of invalid operations or undefined quantities. These include QuietNaN (qNaN) for operations with indeterminate results and SignalingNaN (sNaN) for exceptional conditions that may trigger an interrupt or exception.
+
+| precision | sign bit | exponent bits     | mantissa bits                                                    |
+| --------- | -------- | ----------------- | ---------------------------------------------------------------- |
+| 64-bit    | 0        | 000 0000 0000     | 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 |
+| 32-bit    | 0        |     0000 0000     |                                     000 0000 0000 0000 0000 0000 |
+| 16-bit    | 0        |        0 0000     |                                                     00 0000 0000 |
+| B16-bit   | 0        |     0000 0000     |                                                         000 0000 |
+| 8-bit     | 0        |           000     |                                                             0000 |
