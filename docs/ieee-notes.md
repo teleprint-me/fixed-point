@@ -12,12 +12,12 @@ The specification also allows for extended formats. In addition to the standard 
 
 ### Conformance
 
-- We'll need to provide a way to initialize, encode, decode, and free the information.
+- We need to provide a way to initialize, encode, decode, and free the information.
 
-The other conformance options are typically hardware and/or language dependent.
+Other conformance options are typically hardware and/or language dependent:
 
 - Providing expected arithmetic formats
-- Providing ability to read and write formats
-- Providing radix formats (base 2 and base 10 respectively)
+- Providing the ability to read and write formats
+- Providing radix formats (base 2 and base 10)
 
-The last 3 points seem superfluous, especially considering base 2, 10, and 16 are all utilized.
+The last three points seem superfluous, especially considering that base 2, 10, and 16 are all utilized.
