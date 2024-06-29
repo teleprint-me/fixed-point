@@ -6,56 +6,43 @@
 #include <stdlib.h>
 
 typedef enum DataType {
-    TYPE_FLOAT_F32,
-    TYPE_FLOAT_F16,
-    TYPE_FLOAT_BF16,
-    TYPE_QUANT_K8, // k-bit precision
-    TYPE_QUANT_K4,
-    TYPE_MAX_COUNT, // number of data types
+    TYPE_FLOAT_F32,  // ieee-754
+    TYPE_FLOAT_F16,  // ieee-754
+    TYPE_FLOAT_BF16, // google brain
+    TYPE_FLOAT_F8,   // custom 8-bit precision
+    TYPE_QUANT_K8,   // k-bit precision
+    TYPE_QUANT_K4,   // k-bit precision
+    TYPE_MAX_COUNT,  // number of data types
 } data_t;
 
-// 32-bit floating point (standard float)
-typedef union Float32 {
-    uint32_t bits;
-    float    value;
-} float32_t;
-
-// Standard half-precision (IEEE 754)
-typedef uint16_t float16_t;
-
-// Google Brain half-precision bfloat16
-typedef uint16_t bfloat16_t;
-
-// 8-bit quarter-precision
+// Generalized float structure
 typedef struct {
-    float16_t delta;
-    size_t    size;   // Number of quantized values (default to 32)
-    uint8_t*  quants; // Dynamically allocated array for quantized values
-} quant8_t;
+    union {
+        uint32_t f32;
+        uint16_t f16;
+        uint8_t  f8;
+    } bits;
 
-// 4-bit eighth-precision
+    float  value;
+    data_t type;
+} float_t;
+
+// Quantization structure
 typedef struct {
-    float16_t delta;
-    size_t    size;   // Number of quantized nibbles (default to 16)
-    uint8_t*  quants; // Dynamically allocated array for quantized nibbles
-} quant4_t;
+    float_t  delta;  // Change in precision
+    size_t   size;   // Number of quantized values (default to 32)
+    uint8_t* quants; // Dynamically allocated array for quantized values
+    data_t   type;   // Data type used during quantization
+} quant_t;
 
-float16_t encode_float16(float value);
-float     decode_float16(float16_t value);
+// Function declarations
+float_t encode_float(float value, data_t type);
+float   decode_float(float_t value);
 
-bfloat16_t encode_bfloat16(float value);
-float      decode_bfloat16(bfloat16_t value);
+quant_t* encode_quant(float value, size_t size, data_t dtype);
+float    decode_quant(const quant_t* quant);
 
-quant8_t* encode_quant8(float value, size_t size);
-float     decode_float(const quant8_t* quant);
-
-quant4_t* encode_quant4(float value, size_t size);
-float     decode_float(const quant4_t* quant);
-
-quant8_t* malloc_quant8(float16_t delta, size_t size, uint8_t* quants);
-void      free_quant8(quant8_t* quant);
-
-quant4_t* malloc_quant4(float16_t delta, size_t size, uint8_t* quants);
-void      free_quant4(quant4_t* quant);
+quant_t* malloc_quant(float_t delta, size_t size, data_t dtype, uint8_t* quants);
+void     free_quant(quant_t* quant);
 
 #endif // PRECISION_H
