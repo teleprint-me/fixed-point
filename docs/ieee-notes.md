@@ -30,11 +30,11 @@ There are 4 levels defined by the specification:
 
    Extended real numbers ($\mathbb{R}$) encompass all possible results obtained through mathematical operations on real numbers, approximated as finite floating-point values.
 
-2. **Floating-Point Data**: $\{-\infty, \dots, +\infty\} \cup \{-\infty, +\infty\} \cup \text{qNaN} \cup \text{sNaN}$
+2. **Floating-Point Data**: $\{-\infty, \dots, +\infty\} \cup \{-\infty, +\infty\} \cup (\text{qNaN} \cup \text{sNaN})$
 
    Floating-point data form an algebraically closed system including signed zeros, nonzero finite numbers (both positive and negative), infinities, and NaNs. This level represents a many-to-one mapping from extended real numbers due to rounding errors.
 
-3. **Floating-Point Representation**: $(s, e, m) \cup \{-\infty, +\infty\} \cup \text{qNaN} \cup \text{sNaN}$
+3. **Floating-Point Representation**: $(s, e, m) \cup \{-\infty, +\infty\} \cup (\text{qNaN} \cup \text{sNaN})$
 
    Representations of floating-point data include sign ($s$), exponent ($e$), mantissa ($m$, also known as significand), along with positive infinity, negative infinity, QuietNaN (qNaN), and SignalingNaN (sNaN). This level provides a one-to-many mapping from floating-point data to their representations due to different encodings.
 
@@ -46,7 +46,7 @@ There are 4 levels defined by the specification:
 
 Representations can consist of:
 
-- **$(s, e, m)$ in Radix (Base) $b$**: Expressed as $(-1)^s \times b^e \times m$,
+- **$(s, e, m)$ in radix $b$ (base)**: Expressed as $(-1)^s \times b^e \times m$,
   
   where:
   - $s$ is the sign,
@@ -60,6 +60,19 @@ Representations can consist of:
 - **$\text{qNaN} \cup \text{sNaN}$**:
 
   NaN (Not-a-Number) values are used to represent results of invalid operations or undefined quantities. These include QuietNaN (qNaN) for operations with indeterminate results and SignalingNaN (sNaN) for exceptional conditions that may trigger an interrupt or exception.
+
+## Set of representable numbers
+
+The specification defines this as a finite set of floating-point numbers within a given format. Each format may include the parameters $b$, $p$, $emax$, and $emin$.
+
+I like to think of this as base ($b$), precision ($p$), the exponents maximum ($max(e)$), and the exponents minimum ($min(e)$) where $min(e)$ is $1 - max(e)$ for all formats.
+
+- $b = 2$ or $b = 10$ where $b$ is the base
+- $p = len(m)$
+- $emax = max(e)$
+- $emin = min(e)$ where $1 - max(e)$ for all formats
+
+Each format is identified by its base and the number of bits in its encoding.
 
 | precision | sign bit | exponent bits     | mantissa bits                                                    |
 | --------- | -------- | ----------------- | ---------------------------------------------------------------- |
