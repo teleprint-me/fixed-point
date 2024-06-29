@@ -77,7 +77,7 @@ This section expands on the floating-point representation, taking the formatted 
   - $s$: sign (0 or 1)
   - $e$: exponent ($\min(e) \le e \le \max(e)$)
   - $m$: mantissa (significand) is $d_0 \cdot d_1 \cdot d_2 \cdot \dots \cdot d_{p-1}$
-  - $\{±\infty\}$: the upper and lower bounds for a set including infinity
+  - $\{\pm\infty\}$: the upper and lower bounds for a set including infinity
   - $NaN$: $qNaN$ (Quiet NaN) and $sNaN$ (Signaling NaN)
 
 These are the only data representations available.
@@ -136,10 +136,91 @@ Let’s consider a simple example with a base $b = 10$ and precision $p = 3$:
 
 So, while $m$ and $c$ represent the same underlying value, $m$ includes the radix point in a fractional form, and $c$ is an integer form used for certain computational efficiencies.
 
+### Determining the Range
+
+- The smallest positive normal floating-point number is $b^{e_{min}}$.
+- The largest is $b^{e_{max}} \times (b - b^{1 - p})$.
+- Subnormal numbers have magnitudes less than $b^{e_{min}}$ and fewer than $p$ significant digits.
+
+### Representing Zero and Infinity
+
+- Zero: Both +0 and -0 have distinct representations and significance in operations like division by zero.
+- Infinity: Represented without a sign when the sign is not important.
+
+### Parameters for Common Formats
+
+#### 16-bit (Half-precision)
+
+- **Total bits**: 16
+- **Sign bit**: 1 bit
+- **Exponent bits**: 5 bits
+- **Significand bits**: 10 bits
+
+#### B16 (Brain-precision, custom format)
+
+- **Total bits**: 16
+- **Sign bit**: 1 bit
+- **Exponent bits**: 8 bits
+- **Significand bits**: 7 bits
+
+#### 8-bit (Quarter-precision, custom format)
+
+- **Total bits**: 8
+- **Sign bit**: 1 bit
+- **Exponent bits**: 3 bits
+- **Significand bits**: 4 bits
+
+#### Calculation of $e_{max}$
+
+For a given format, the maximum exponent value ($e_{max}$) is determined as follows:
+
+$e_{max} = 2^{(\text{exponent bits} - 1)} - 1$
+
+### Parameters for Common Formats
+
+| Parameter   | 8-bit | 16-bit | B16  | 32-bit | 64-bit | 128-bit |
+| ----------- | ----- | ------ | ---- | ------ | ------ | ------- |
+| $p$, digits | 4     | 11     | 7    | 24     | 53     | 113     |
+| $e_{max}$   | +3    | +15    | +127 | +127   | +1023  | +16383  |
+
+### Explanation
+
+- **8-bit format**: 
+  - $p$ (digits) = 4 (significand bits)
+  - Exponent bits = 3
+  - $e_{max} = 2^{(3 - 1)} - 1 = 3$
+
+- **16-bit format**: 
+  - $p$ (digits) = 11 (significand bits)
+  - Exponent bits = 5
+  - $e_{max} = 2^{(5 - 1)} - 1 = 15$
+
+- **B16 format**: 
+  - $p$ (digits) = 7 (significand bits)
+  - Exponent bits = 8
+  - $e_{max} = 2^{(8 - 1)} - 1 = 127$
+
+- **32-bit format**: 
+  - $p$ (digits) = 24 (significand bits)
+  - Exponent bits = 8
+  - $e_{max} = 2^{(8 - 1)} - 1 = 127$
+
+- **64-bit format**: 
+  - $p$ (digits) = 53 (significand bits)
+  - Exponent bits = 11
+  - $e_{max} = 2^{(11 - 1)} - 1 = 1023$
+
+- **128-bit format**: 
+  - $p$ (digits) = 113 (significand bits)
+  - Exponent bits = 15
+  - $e_{max} = 2^{(15 - 1)} - 1 = 16383$
+
+### Outline for Common Precision Formats
+
 | precision | sign bit | exponent bits | mantissa (or significand) bits                                   |
 | --------- | -------- | ------------- | ---------------------------------------------------------------- |
 | 64-bit    | 0        | 0000 0000 000 | 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 |
 | 32-bit    | 0        | 0000 0000     | 0000 0000 0000 0000 0000 000                                     |
-| 16-bit    | 0        | 0000 0        | 0000 0000 00                                                     |
 | B16-bit   | 0        | 0000 0000     | 0000 000                                                         |
+| 16-bit    | 0        | 0000 0        | 0000 0000 00                                                     |
 | 8-bit     | 0        | 000           | 0000                                                             |
