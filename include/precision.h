@@ -17,17 +17,32 @@ typedef enum {
     TYPE_MAX_COUNT,  // number of data types
 } data_t;
 
-// Map float to internal integer representation
-typedef union {
-    uint32_t bits;
-    float    value;
-} float_data_t;
-
 // Data types for different precisions
 typedef uint32_t float32_t;
 typedef uint16_t float16_t;
 typedef uint16_t bfloat16_t;
 typedef uint8_t  float8_t;
+
+typedef struct {
+    float inf;  // upper bound (± ∞)
+    float zero; // lower bound (typically ± 0)
+
+    uint32_t p; // precision (number of significand digits)
+
+    uint32_t sign;     // sign bit count
+    uint32_t exponent; // exponent bit count
+    uint32_t mantissa; // significand bit count
+
+    int32_t e_bias; // bias for the exponent
+    int32_t e_max;  // maximum exponent value (derived from e and e_bias)
+    int32_t e_min;  // minimum exponent value (derived from e and e_bias)
+} precision_t;
+
+// Map float to internal integer representation
+typedef union {
+    float32_t bits;
+    float     value;
+} float_data_t;
 
 // Generalized float structure
 typedef struct {
@@ -39,32 +54,32 @@ typedef struct {
     } value;
 
     data_t type;
-} flex_float_t;
+} float_flex_t;
 
-// Quantization structure
-typedef struct {
-    flex_float_t delta;  // Change in precision
-    size_t       size;   // Number of quantized values (default to 32)
-    uint8_t*     quants; // Dynamically allocated array for quantized values
-    data_t       type;   // Data type used during quantization
-} quant_t;
+// Function declarations
+precision_t encode_precision(float inf, float zero, uint32_t p, uint32_t s, uint32_t e, uint32_t m);
+float       decode_precision(precision_t p);
 
-// Function to encode a float value into a specified type
-flex_float_t encode_float(float value, data_t type);
+uint32_t encode_data(float value);
+float    decode_data(uint32_t bits);
 
-// Function to decode a flex_float_t value back to float
-float decode_float(flex_float_t value);
+float_flex_t encode_float(float value, data_t type);
+float        decode_float(float_flex_t flex);
 
-// Function to encode a series of float values into quantized form
-quant_t* encode_quant(float value, size_t size, data_t dtype, flex_float_t* vector);
+// Standard 32-bit floating-point
+float_flex_t encode_float32(float value);
+float        decode_float32(float_flex_t flex);
 
-// Function to decode a quantized value back to float
-float decode_quant(const quant_t* quant);
+// Standard 16-bit floating-point
+float_flex_t encode_float16(float value);
+float        decode_float16(float_flex_t flex);
 
-// Function to allocate memory for a quant_t structure
-quant_t* malloc_quant(flex_float_t delta, size_t size, data_t dtype, uint8_t* quants);
+// Extended 8-bit float
+float_flex_t encode_float8(float value);
+float        decode_float8(float_flex_t flex);
 
-// Function to free memory of a quant_t structure
-void free_quant(quant_t* quant);
+// Google brain 16-bit float
+float_flex_t encode_bfloat16(float value);
+float        decode_bfloat16(float_flex_t flex);
 
 #endif // PRECISION_H
