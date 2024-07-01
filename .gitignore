@@ -7,7 +7,6 @@
 
 # ignore local files
 *.ini
-*.txt
 
 ####################
 # C++ ignore rules #
