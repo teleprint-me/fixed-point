@@ -27,34 +27,29 @@ parser.add_argument(
     "--hex",
     help="A hexadecimal string to unpack from bits and display as an integer or float",
 )
+
+# Define possible byte order values
+VALID_ORDER = ["<", ">", "@", "=", "!"]
 parser.add_argument(
     "-o",
     "--order",
-    default="<",
-    help="The byte order to use. Default is `<` (little endian).",
+    choices=VALID_ORDER,
+    default="@",
+    help="The byte order to use. Default is `@` (native).",
 )
 args = parser.parse_args()
 
-# Safely handle byte order symbols and default if an invalid value is given
-order = {
-    "@": "@",
-    "=": "=",
-    "<": "<",
-    ">": ">",
-    "!": "!",
-}.get(args.order, "<")
-
 # Convert inputs based on the given input type
 if args.float is not None:
-    packed = struct.pack("<f", float(args.float))
+    packed = struct.pack(f"{args.order}f", float(args.float))
 elif args.int is not None:
-    packed = struct.pack("<i", int(args.int))
+    packed = struct.pack(f"{args.order}i", int(args.int))
 elif args.hex:
     value = int(args.hex, 16)
-    if -2147483648 <= value <= 2147483647:
-        raise ValueError(f"{value} is out of range.")
+    if not (-2147483648 <= value <= 2147483647):
+        raise ValueError(f"Out of Range: -2147483648 <= {value} <= 2147483647")
     print("int:", value)
-    packed = struct.pack("<i", value)
+    packed = struct.pack(f"{args.order}i", value)
 else:
     raise ValueError("Invalid parameter given.")
 
