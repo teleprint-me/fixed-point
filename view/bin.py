@@ -31,7 +31,8 @@ def main():
 
     result = bin_to_int(args.binary)
 
-    print("Integer:", result)
+    print("int:", result)
+    print("hex:", f"0x{int(str(result), base=16)}")
 
 
 if __name__ == "__main__":
