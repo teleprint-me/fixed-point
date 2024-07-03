@@ -3,7 +3,7 @@
 */
 #include <iostream>
 
-#include "../include/fixed_point.h"
+#include "../include/fixed.h"
 
 int main() {
     std::cout.precision(10);
@@ -14,12 +14,12 @@ int main() {
 
     // Perform arithmetic operations
     // addition and subtraction operate as expected
-    fixed16_t sum = a + b;
+    fixed16_t sum        = a + b;
     fixed16_t difference = a - b;
     // multiplication and division need to be handled uniquely
     // the issue seems due to the way shifting is handled
-    fixed16_t product = a * b;  // this (approximately) produces ~2^14
-    fixed16_t quotient = a / b;  // this produces epsilon
+    fixed16_t product    = a * b; // this (approximately) produces ~2^14
+    fixed16_t quotient   = a / b; // this produces epsilon
 
     std::cout << "a: " << FIXED_TO_FLOAT(a) << std::endl;
     std::cout << "b: " << FIXED_TO_FLOAT(b) << std::endl;
