@@ -60,16 +60,49 @@ Representations can consist of:
 
 ### Set of Representable Numbers
 
-Defined as a finite set of floating-point numbers within a format. Parameters: $b$, $p$, $e_{max}$, and $e_{min}$.
+A finite set of floating-point numbers within a given format is defined by several parameters: base ($b$), precision ($p$), maximum exponent ($e_{max}$), and minimum exponent ($e_{min}$).
 
-- Base ($b$), precision ($p$), maximum exponent ($e_{max}$), minimum exponent ($e_{min} = 1 - e_{max}$).
+1. **Base ($b$)**: 
+   - The numerical base used for the representation. For binary floating-point formats, $b = 2$.
 
-- $b = 2$ (use binary base)
-- $p = \text{len}(m)$ (number of significand digits)
-- $e_{max} = \text{len}(e) - 1$ (one less than the number of exponent digits)
-- $e_{min} = 1 - e_{max}$ (one more than the additive inverse of $e_{max}$)
+2. **Precision ($p$)**:
+   - The number of significand (or mantissa) digits. In binary formats, this corresponds to the number of bits used to represent the significand, not including the implicit leading bit.
 
-Each format is identified by its base and the number of bits in its encoding.
+3. **Exponent ($e$)**:
+   - The field that determines the range of the representable numbers.
+   - The length of this field is $len(e)$ bits.
+   - The maximum exponent ($e_{max}$) is typically $2^{len(e) - 1} - 1$.
+   - The minimum exponent ($e_{min}$) is $1 - e_{max}$.
+   - The bias for the exponent ($e_{bias}$) is $2^{len(e) - 1} - 1$.
+
+Each floating-point format can be uniquely identified by its base and the number of bits allocated for each part of its representation (sign bit, exponent bits, and significand bits).
+
+#### Example: IEEE-754 Single Precision (32-bit)
+
+1. **Base ($b$)**:
+   - $b = 2$
+
+2. **Precision ($p$)**:
+   - The number of bits in the significand (mantissa), including the implicit leading bit. For IEEE-754 single precision: $p = 24 \text{(1 implicit bit + 23 explicit bits)}$
+
+3. **Exponent ($e$)**:
+   - The exponent field has 8 bits ($len(e) = 8$).
+
+4. **Maximum exponent ($e_{max}$)**:
+   - The maximum exponent value is: $e_{max} = 2^{8-1} - 1 = 127$
+
+5. **Minimum exponent ($e_{min}$)**:
+   - The minimum exponent value is: $e_{min} = 1 - e_{max} = 1 - 127 = -126$
+
+6. **Exponent bias ($e_{bias}$)**:
+   - The bias for the exponent is: $e_{bias} = 2^{8-1} - 1 = 127$
+
+Each floating-point number is represented by three fields:
+- 1-bit sign
+- 8-bit exponent
+- 23-bit significand
+
+The value of a floating-point number is given by: $(-1)^{\text{sign}} \times 1.\text{significand bits} \times 2^{\text{exponent} - e_{bias}}$
 
 ### Floating-Point Data Representation
 
