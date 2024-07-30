@@ -6,6 +6,10 @@
 
 #include <stdint.h>
 
+bool float_is_close(float a, float b, float tolerance /*= FLOAT_TOLERANCE*/) {
+    return fabsf(a - b) <= fmaxf(tolerance * fmaxf(fabsf(a), fabsf(b)), tolerance);
+}
+
 /*
  * Binary 32-bit floating point encoding
  */
