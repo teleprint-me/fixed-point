@@ -2,50 +2,41 @@
 // Original source: /usr/include/c10/util/half.h
 // 3rd party source: https://github.com/Maratyszcza/FP16
 // 3rd party tutorial: https://geeksforgeeks.org/ieee-standard-754-floating-point-numbers/
-#include <math.h>
+#include "../include/precision.h"
+
 #include <stdint.h>
 
-// 32-bit floating point (standard float)
-typedef union {
-    uint32_t bits;
-    float    value;
-} float32_t;
-
-// Standard half-precision (IEEE 754)
-typedef uint16_t float16_t;
-
-uint32_t encode_float(float value);
-float    decode_float(uint32_t bits);
-
-float16_t encode_float16(float value);
-float     decode_float16(float16_t bits);
-
-// Function to encode a float into its IEEE-754 binary32 representation
-uint32_t encode_float(float value) {
-    float32_t f32;
-    f32.value = value;
-    return f32.bits;
-}
-
-// Function to decode an IEEE-754 binary32 representation into a float
-float decode_float(uint32_t bits) {
-    float32_t f32;
-    f32.bits = bits;
-    return f32.value;
+/*
+ * Binary 32-bit floating point encoding
+ */
+float32_t encode_float32(float value) {
+    float_data_t data;
+    data.value = value;
+    return data.bits;
 }
 
 /*
- * Convert a 32-bit floating-point number in IEEE single-precision format to a 16-bit floating-point
- * number in IEEE half-precision format, in bit representation.
+ * Binary 32-bit floating point decoding
  */
-uint16_t encode_float16(float value) {
-    const float scale_to_inf  = decode_float(UINT32_C(0x77800000)); // Upper bound
-    const float scale_to_zero = decode_float(UINT32_C(0x08800000)); // Lower bound
+float decode_float32(float32_t bits) {
+    float_data_t data;
+    data.bits = bits;
+    return data.value;
+}
+
+/*
+ * Binary 16-bit floating point representation
+ */
+float16_t encode_float16(float value) {
+    const float_flex_t flex;
+
+    const float scale_to_inf  = decode_data(UINT32_C(0x77800000)); // Upper bound
+    const float scale_to_zero = decode_data(UINT32_C(0x08800000)); // Lower bound
 
     const float saturated_f = fabsf(value) * scale_to_inf;
     float       base        = saturated_f * scale_to_zero;
 
-    const uint32_t f      = encode_float(value);
+    const uint32_t f      = encode_data(value);
     const uint32_t shl1_f = f + f;
     const uint32_t sign   = f & UINT32_C(0x80000000);
     uint32_t       bias   = shl1_f & UINT32_C(0xFF000000);
@@ -53,8 +44,8 @@ uint16_t encode_float16(float value) {
         bias = UINT32_C(0x71000000);
     }
 
-    base                         = decode_float((bias >> 1) + UINT32_C(0x07800000)) + base;
-    const uint32_t bits          = encode_float(base);
+    base                         = decode_data((bias >> 1) + UINT32_C(0x07800000)) + base;
+    const uint32_t bits          = encode_data(base);
     const uint32_t exp_bits      = (bits >> 13) & UINT32_C(0x00007C00);
     const uint32_t mantissa_bits = bits & UINT32_C(0x00000FFF);
     const uint32_t nonsign       = exp_bits + mantissa_bits;
@@ -62,11 +53,7 @@ uint16_t encode_float16(float value) {
     return (sign >> 16) | (shl1_f > UINT32_C(0xFF000000) ? UINT16_C(0x7E00) : nonsign);
 }
 
-/*
- * Convert a 16-bit floating-point number in IEEE half-precision format to a 32-bit floating-point
- * number in IEEE single-precision format.
- */
-float decode_float16(uint16_t bits) {
+float decode_float16(float16_t bits) {
     const uint32_t f      = (uint32_t) bits << 16;
     const uint32_t sign   = f & UINT32_C(0x80000000);
     const uint32_t shl1_f = f + f;
@@ -84,4 +71,37 @@ float decode_float16(uint16_t bits) {
                             | (shl1_f < denormalized_cutoff ? encode_float(denormalized_value)
                                                             : encode_float(normalized_value));
     return decode_float(result);
+}
+
+/*
+ * 16-bit brain floating point representation
+ */
+bfloat16_t encode_bfloat16(float value) {
+    // Take the higher 16 bits of the float32 representation
+    uint32_t bits = encode_float32(value);
+
+    // Handle NaN: force to quiet NaN
+    if ((bits & 0x7fffffff) > 0x7f800000) {
+        return (bits >> 16) | 0x0040;
+    }
+
+    // Handle subnormals: flush to zero
+    if ((bits & 0x7f800000) == 0) {
+        return (bits >> 16) & 0x8000;
+    }
+
+    // Rounding: round to nearest even
+    uint32_t rounding_bias = (bits & 0x0000ffff) > 0x00007fff    ? 1
+                             : (bits & 0x00018000) == 0x00018000 ? 1
+                                                                 : 0;
+    return (bits + rounding_bias) >> 16;
+}
+
+/**
+ * Converts bfloat16 to float32.
+ */
+float decode_bfloat16(bfloat16_t bf16) {
+    float_data_t data;
+    data.bits = (uint32_t) bf16 << 16;
+    return data.value;
 }
