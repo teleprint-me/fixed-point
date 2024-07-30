@@ -83,16 +83,66 @@ float32_t encode_float32(float value);
  */
 float decode_float32(float32_t bits);
 
-// Encode standard 16-bit floating-point
+/**
+ * @brief Encodes a given float value into its corresponding 16-bit representation (IEEE-754 half
+ * precision).
+ *
+ * @param[in] value The floating point number to be encoded.
+ *
+ * @return The resulting encoded 16-bit integer representation of the input value.
+ */
 float16_t encode_float16(float value);
-float     decode_float16(float16_t bits);
 
-// Encode extended 8-bit float
-float8_t encode_float8(float value);
-float    decode_float8(float8_t bits);
+/**
+ * @brief Decodes a given 16-bit integer representation into its corresponding float value (IEEE-754
+ * half precision).
+ *
+ * @param[in] bits The encoded 16-bit integer bit representation of the floating-point number.
+ *
+ * @return The decoded actual 16-bit floating-point value represented by this data structure.
+ */
+float decode_float16(float16_t bits);
 
-// Encode Google Brain 16-bit float
+/**
+ * @brief Encodes a given float value into its corresponding Google Brain bfloat16 representation
+ * (half precision).
+ *
+ * @param[in] value The floating point number to be encoded using Google Brain's 16-bit format.
+ *
+ * @return The resulting encoded 16-bit integer representation of the input value in bfloat16
+ * format.
+ */
 bfloat16_t encode_bfloat16(float value);
-float      decode_bfloat16(bfloat16_t flex);
+
+/**
+ * @brief Decodes a given bfloat16 integer representation into its corresponding float value.
+ *
+ * @param[in] bits The encoded 16-bit bit representation of the floating-point number in bfloat16
+ * format.
+ *
+ * @return The decoded actual 32-bit floating-point value represented by this data structure.
+ */
+float decode_bfloat16(bfloat16_t bits);
+
+/**
+ * @brief Encodes a given float value into its corresponding 8-bit representation (Extended 8-bit
+ * floating point).
+ *
+ * @param[in] value The floating point number to be encoded.
+ *
+ * @return The resulting encoded 8-bit integer representation of the input value.
+ */
+float8_t encode_float8(float value);
+
+/**
+ * @brief Decodes a given 8-bit integer representation into its corresponding float value (Extended
+ * 8-bit floating point).
+ *
+ * @param[in] bits The encoded 8-bit bit representation of the floating-point number.
+ *
+ * @return The decoded actual extended 8-bit floating-point value represented by this data
+ * structure.
+ */
+float decode_float8(float8_t bits);
 
 #endif // PRECISION_H
