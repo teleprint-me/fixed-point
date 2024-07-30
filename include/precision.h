@@ -1,3 +1,16 @@
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file include/precision.h
+ *
+ * @brief A simple and easy-to-use API in C for handling various floating-point
+ *        precisions, including 32-bit (float), 16-bit (half precision float:
+ *        IEEE-754 & bfloat16), 16-bit Google Brain format, and extended 8-bit
+ *        floats.
+ *
+ * Only pure C is used with minimal dependencies on external libraries.
+ */
+
 #ifndef PRECISION_H
 #define PRECISION_H
 
