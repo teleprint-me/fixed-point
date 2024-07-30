@@ -105,3 +105,53 @@ float decode_bfloat16(bfloat16_t bf16) {
     data.bits = (uint32_t) bf16 << 16;
     return data.value;
 }
+
+// Helper function to encode a float based on its data type
+// float_flex_t encode_float(float value, data_t type) {
+//     float_flex_t encoded;
+//     encoded.type      = type;
+//     encoded.value.f32 = value;
+//     switch (type) {
+//         case TYPE_FLOAT_F32:
+//             encoded.bits.f32 = (uint32_t) value;
+//             break;
+//         case TYPE_FLOAT_F16:
+//             // Encoding logic for float16
+//             // Placeholder: real implementation needed
+//             encoded.bits.f16 = (uint16_t) value;
+//             break;
+//         case TYPE_FLOAT_F8:
+//             // Encoding logic for float8
+//             // Placeholder: real implementation needed
+//             encoded.bits.f8 = (uint8_t) value;
+//             break;
+//         default:
+//             // Unsupported type
+//             assert(0);
+//     }
+//     return encoded;
+// }
+
+// Helper function to decode a float based on its data type
+// float decode_float(float_flex_t encoded) {
+//     float value = 0.0f;
+//     switch (encoded.type) {
+//         case TYPE_FLOAT_F32:
+//             value = *(float*) &encoded.bits.f32;
+//             break;
+//         case TYPE_FLOAT_F16:
+//             // Decoding logic for float16
+//             // Placeholder: real implementation needed
+//             value = (float) encoded.bits.f16;
+//             break;
+//         case TYPE_FLOAT_F8:
+//             // Decoding logic for float8
+//             // Placeholder: real implementation needed
+//             value = (float) encoded.bits.f8;
+//             break;
+//         default:
+//             // Unsupported type
+//             assert(0);
+//     }
+//     return value;
+// }
