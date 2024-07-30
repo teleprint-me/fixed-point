@@ -1,7 +1,27 @@
-// Original paper: https://ieeexplore.ieee.org/document/8766229
-// Original source: /usr/include/c10/util/half.h
-// 3rd party source: https://github.com/Maratyszcza/FP16
-// 3rd party tutorial: https://geeksforgeeks.org/ieee-standard-754-floating-point-numbers/
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file src/precision.c
+ *
+ * @brief A simple and easy-to-use API in C for handling various floating-point
+ *        precisions, including 32-bit (float), 16-bit (half precision float:
+ *        IEEE-754 & bfloat16), 16-bit Google Brain format, and extended 8-bit
+ *        floats.
+ *
+ * Only pure C is used with minimal dependencies on external libraries.
+ *
+ * @note Original work
+ * @ref https://ieeexplore.ieee.org/document/8766229
+ *
+ * @note 3rd party work
+ * @ref shttps://geeksforgeeks.org/ieee-standard-754-floating-point-numbers/
+ *
+ * @note Source code
+ * @ref /usr/include/c10/util/half.h
+ * @ref https://github.com/Maratyszcza/FP16
+ * @ref https://github.com/pytorch/pytorch/blob/main/c10/util/Half.h
+ */
+
 #include "../include/precision.h"
 
 #include <stdint.h>
