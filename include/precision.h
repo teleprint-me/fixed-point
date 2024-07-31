@@ -170,8 +170,8 @@ float8_t encode_float8(float value);
 float decode_float8(float8_t bits);
 
 // helper functions for printing internal binary representation
-void print_32bit_raw(uint32_t bits, size_t bit_width);
-void print_32bit_formatted(uint32_t bits);
+void print_32bit_raw(float32_t bits, size_t bit_width);
+void print_32bit_formatted(float32_t bits);
 void print_32bit_metadata(float value, const size_t bit_width);
 
 #endif // PRECISION_H

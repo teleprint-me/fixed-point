@@ -181,7 +181,7 @@ float decode_bfloat16(bfloat16_t bf16) {
 // }
 
 // Function to print the binary representation of a 32-bit number
-void print_32bit_raw(uint32_t bits, size_t bit_width) {
+void print_32bit_raw(float32_t bits, size_t bit_width) {
     for (int i = bit_width - 1; i >= 0; i--) {
         printf("%d", (bits >> i) & 1);
         if (0 == i % 4 && 0 != i) {
@@ -191,7 +191,7 @@ void print_32bit_raw(uint32_t bits, size_t bit_width) {
     printf("\n");
 }
 
-void print_32bit_formatted(uint32_t bits) {
+void print_32bit_formatted(float32_t bits) {
     printf("%f -> ", decode_float32(bits));
 
     // Extract the sign bit (1 bit)
