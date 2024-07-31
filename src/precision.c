@@ -10,7 +10,7 @@
  *
  * Only pure C is used with minimal dependencies on external libraries.
  *
- * @note Original work
+ * @note Official document
  * @ref https://ieeexplore.ieee.org/document/8766229
  *
  * @note 3rd party work
