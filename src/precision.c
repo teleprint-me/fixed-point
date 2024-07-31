@@ -179,3 +179,59 @@ float decode_bfloat16(bfloat16_t bf16) {
 //     }
 //     return value;
 // }
+
+// Function to print the binary representation of a 32-bit number
+void print_32bit_raw(uint32_t bits, size_t bit_width) {
+    for (int i = bit_width - 1; i >= 0; i--) {
+        printf("%d", (bits >> i) & 1);
+        if (0 == i % 4 && 0 != i) {
+            printf(" ");
+        }
+    }
+    printf("\n");
+}
+
+void print_32bit_formatted(uint32_t bits) {
+    printf("%f -> ", decode_float32(bits));
+
+    // Extract the sign bit (1 bit)
+    uint32_t sign = (bits >> 31) & 0x1;
+    printf("%d ", sign);
+
+    // Extract the exponent bits (8 bits)
+    uint32_t exponent = (bits >> 23) & 0xFF;
+    for (int i = 7; i >= 0; i--) {
+        printf("%d", (exponent >> i) & 0x1);
+        if (i == 4) {
+            printf(" ");
+        }
+    }
+    printf(" ");
+
+    // Extract the mantissa bits (23 bits)
+    uint32_t mantissa = bits & 0x7FFFFF;
+    for (int i = 22; i >= 0; i--) {
+        printf("%d", (mantissa >> i) & 0x1);
+        if (i % 4 == 0) {
+            printf(" ");
+        }
+    }
+    printf("\n");
+}
+
+void print_32bit_metadata(float value, const size_t bit_width) {
+    // Encode the float into IEEE-754 binary32 representation
+    uint32_t encoded = encode_float32(value);
+    printf("value (float): %f\n", value);
+    printf("encoded (hex): 0x%08X\n", encoded);
+    printf("encoded (binary): ");
+    print_32bit_raw(encoded, bit_width);
+
+    // Decode the IEEE-754 binary32 representation back into a float
+    float decoded = decode_float32(encoded);
+    printf("decoded (float): %f\n", decoded);
+
+    // literal internal representation
+    printf("literal representation: ");
+    print_32bit_formatted(encoded);
+}
