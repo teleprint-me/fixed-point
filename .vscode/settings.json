@@ -88,6 +88,10 @@
     "utility": "c",
     "*.tcc": "c",
     "regex": "c",
-    "bitset": "cpp"
+    "bitset": "cpp",
+    "cmath": "cpp",
+    "complex": "cpp",
+    "cstdint": "cpp",
+    "ostream": "cpp"
   }
 }
