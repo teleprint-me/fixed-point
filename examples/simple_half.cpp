@@ -4,49 +4,70 @@
 
 #define PI 3.141592653589793f
 
-// 32-bit floating point (standard float)
-typedef union {
-    uint32_t bits;
-    float    value;
-} float32_t;
-
 // Standard half-precision (IEEE 754)
+typedef uint32_t float32_t;
 typedef uint16_t float16_t;
 
-uint32_t encode_float(float value);
-float    decode_float(uint32_t bits);
+// 32-bit floating point (standard float)
+typedef union {
+    float32_t bits;
+    float     value;
+} float_repr_t;
+
+float32_t encode_float32(float value);
+float     decode_float32(float32_t bits);
 
 float16_t encode_float16(float value);
 float     decode_float16(float16_t bits);
 
 // Function to encode a float into its IEEE-754 binary32 representation
-uint32_t encode_float(float value) {
-    float32_t f32;
-    f32.value = value;
-    return f32.bits;
+float32_t encode_float32(float value) {
+    float_repr_t f;
+    f.value = value;
+    return f.bits;
 }
 
 // Function to decode an IEEE-754 binary32 representation into a float
-float decode_float(uint32_t bits) {
-    float32_t f32;
-    f32.bits = bits;
-    return f32.value;
+float decode_float32(float32_t bits) {
+    float_repr_t f;
+    f.bits = bits;
+    return f.value;
 }
 
 // Function to encode a float into its IEEE-754 binary16 representation
 float16_t encode_float16(float value) {
-    uint32_t w        = encode_float(value);
-    uint32_t sign     = (w & 0x80000000) >> 16;
-    int32_t  exp      = ((w & 0x7F800000) >> 23) - 127 + 15;
-    uint32_t mantissa = w & 0x007FFFFF;
+    // convert the float to int representation
+    uint32_t bits32 = encode_float32(value);
+
+    // calculate the bias
+
+    // 2^(exponent - bias)
+    // exponent = n = 8
+    // 2^(exponent - bias) = (2 ^ (8 - 127)) - 1 - 127 = 128
+    // ---
+    // 2^7-127 = 1
+
+    // 32-bit exponent bias = (2 ^ (n - 1)) - 1 = (2 ^ (8 - 1)) - 1 = 127
+    uint32_t bias32 = pow(2, (8 - 1)) - 1;
+    // 16-bit exponent bias = (2 ^ (n - 1)) - 1 = (2 ^ (5 - 1)) - 1 = 15
+    uint16_t bias16 = pow(2, (5 - 1)) - 1;
+
+    // extract the sign, exp, and man from the 32-bit representation
+
+    // the sign bit becomes the most significant bit
+    uint32_t sign = (bits32 & 0x80000000) >> 16;
+
+    int32_t  exp      = ((bits32 & 0x7F800000) >> 23) - bias32 + bias16;
+    uint32_t mantissa = bits32 & 0x007FFFFF;
 
     if (exp <= 0) {
         if (exp < -10) {
             return (float16_t) sign; // too small, become zero
         }
+        // 0x00800000 -> 0 0000 0001 000 0000 0000 0000 0000 0000
         mantissa = (mantissa | 0x00800000) >> (1 - exp);
         return (float16_t) (sign | (mantissa >> 13));
-    } else if (exp == 0xFF - (127 - 15)) {
+    } else if (exp == 0xFF - (bias32 - bias16)) {
         if (mantissa == 0) {
             return (float16_t) (sign | 0x7C00); // infinity
         } else {
@@ -67,7 +88,7 @@ float decode_float16(float16_t value) {
 
     if (exp == 0) {
         if (mantissa == 0) {
-            return decode_float(sign); // zero
+            return decode_float32(sign); // zero
         }
         exp = 1;
         while (!(mantissa & 0x00800000)) {
@@ -77,16 +98,16 @@ float decode_float16(float16_t value) {
         mantissa &= 0x007FFFFF;
     } else if (exp == 0x1F) {
         if (mantissa == 0) {
-            return decode_float(sign | 0x7F800000); // infinity
+            return decode_float32(sign | 0x7F800000); // infinity
         } else {
-            return decode_float(sign | 0x7F800000 | mantissa); // NaN
+            return decode_float32(sign | 0x7F800000 | mantissa); // NaN
         }
     } else {
         exp += 127 - 15;
     }
 
     uint32_t result = sign | (exp << 23) | mantissa;
-    return decode_float(result);
+    return decode_float32(result);
 }
 
 int main() {
