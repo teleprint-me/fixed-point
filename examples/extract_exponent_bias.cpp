@@ -1,21 +1,32 @@
 /**
  * Copyright © 2024 Austin Berrio
  *
- * @file examples/extract_ieee_754.cpp
+ * @file examples/extract_exponent_bias.cpp
  */
 
 #include <cstdint>
 #include <iostream>
 
 // we only need to operate with powers of 2 in most cases
-int32_t int32_pow2(int32_t exponent) {
-    if (0 > exponent) {
-        return exponent >> 1;
+uint32_t uint32_pow2(uint32_t exponent) {
+    // explicitly type cast to detect values less than 0.
+    // if we do not type cast, they go undetected.
+    if (0 > (int32_t) exponent) {
+        std::cout << "negative exponent detected" << std::endl;
+        throw std::runtime_error("Integers cannot support negative exponents");
     }
-    return 1 << exponent;
+    // efficient way to multiply by a power of base 2
+    return 1 << exponent; // equivalent to 2^exponent
 }
 
 uint32_t uint32_pow(uint32_t base, uint32_t exponent) {
+    // explicitly type cast to detect values less than 0.
+    // if we do not type cast, they go undetected.
+    if (0 > (int32_t) exponent) {
+        std::cout << "negative exponent detected" << std::endl;
+        throw std::runtime_error("Integers cannot support negative exponents");
+    }
+
     uint32_t result = 1;
     while (exponent > 0) {
         if (exponent & 1) {
@@ -40,9 +51,14 @@ int32_t convert_exponent(uint32_t bits, uint32_t width_src, uint32_t width_dest)
 }
 
 int main(void) {
+    // perform regular tests
+    for (size_t i = 0; i < 8; i++) {
+        std::cout << "2^" << i << " = " << uint32_pow2(i) << std::endl;
+    }
+
     // do a stress test
-    for (size_t i = -7; i < 8; i++) {
-        std::cout << "2^" << i << " = " << int32_pow2(i) << std::endl;
+    for (int i = -7; i < 8; i++) {
+        std::cout << "2^" << i << " = " << uint32_pow2(i) << std::endl;
     }
 
     return 0;
