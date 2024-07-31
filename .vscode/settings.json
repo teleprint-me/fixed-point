@@ -92,6 +92,7 @@
     "cmath": "cpp",
     "complex": "cpp",
     "cstdint": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "stdexcept": "cpp"
   }
 }
