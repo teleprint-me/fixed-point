@@ -4,29 +4,40 @@
  * @file examples/extract_exponent_bias.cpp
  */
 
+#include <cassert>
 #include <cstdint>
 #include <iostream>
 
 // we only need to operate with powers of 2 in most cases
 uint32_t uint32_pow2(uint32_t exponent) {
-    // explicitly type cast to detect values less than 0.
-    // if we do not type cast, they go undetected.
-    if (0 > (int32_t) exponent) {
-        std::cout << "negative exponent detected" << std::endl;
-        throw std::runtime_error("Integers cannot support negative exponents");
+    // Check for negative exponent and throw an exception if detected
+    if (0 > static_cast<int32_t>(exponent)) {
+        throw std::invalid_argument(
+            "Integers cannot support negative exponents. Use pow or an equivalent function instead."
+        );
     }
+
     // efficient way to multiply by a power of base 2
     return 1 << exponent; // equivalent to 2^exponent
 }
 
+/**
+ * @brief Computes the power of a base raised to an exponent, limited to positive exponents.
+ *
+ * @param base The base value, must be non-negative.
+ * @param exponent The exponent value, must be non-negative.
+ * @return uint32_t The result of base raised to the power of exponent.
+ * @throws std::invalid_argument If the exponent is negative.
+ */
 uint32_t uint32_pow(uint32_t base, uint32_t exponent) {
-    // explicitly type cast to detect values less than 0.
-    // if we do not type cast, they go undetected.
-    if (0 > (int32_t) exponent) {
-        std::cout << "negative exponent detected" << std::endl;
-        throw std::runtime_error("Integers cannot support negative exponents");
+    // Check for negative exponent and throw an exception if detected
+    if (0 > static_cast<int32_t>(exponent)) {
+        throw std::invalid_argument(
+            "Integers cannot support negative exponents. Use pow or an equivalent function instead."
+        );
     }
 
+    // Fast exponentiation by squaring
     uint32_t result = 1;
     while (exponent > 0) {
         if (exponent & 1) {
@@ -50,15 +61,29 @@ int32_t convert_exponent(uint32_t bits, uint32_t width_src, uint32_t width_dest)
     return exponent + bias_dest;
 }
 
-int main(void) {
-    // perform regular tests
-    for (size_t i = 0; i < 8; i++) {
-        std::cout << "2^" << i << " = " << uint32_pow2(i) << std::endl;
-    }
+int main() {
+    try {
+        // test calculating integer based exponent values
+        for (size_t i = 0; i < 8; i++) {
+            std::cout << "2^" << i << " = " << uint32_pow(2, i) << std::endl;
+        }
 
-    // do a stress test
-    for (int i = -7; i < 8; i++) {
-        std::cout << "2^" << i << " = " << uint32_pow2(i) << std::endl;
+        // test calculating the bias
+
+        // 32-bit bias uses 8 bits
+        uint32_t bias32 = calculate_bias(8);
+        std::cout << "32-bit bias: " << bias32 << std::endl;
+        assert(127 == bias32); //  2^(8 - 1) - 1 = 127
+
+        // 16-bit bias uses 5 bits
+        uint32_t bias16 = calculate_bias(5);
+        std::cout << "16-bit bias: " << bias16 << std::endl;
+        assert(15 == bias16); //  2^(5 - 1) - 1 = 15
+
+        // Attempting a negative exponent (should throw an exception)
+        std::cout << "2^-1 = " << uint32_pow(2, -1) << std::endl;
+    } catch (const std::invalid_argument &e) {
+        std::cerr << e.what() << std::endl;
     }
 
     return 0;
