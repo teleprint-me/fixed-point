@@ -87,6 +87,7 @@
     "type_traits": "c",
     "utility": "c",
     "*.tcc": "c",
-    "regex": "c"
+    "regex": "c",
+    "bitset": "cpp"
   }
 }
