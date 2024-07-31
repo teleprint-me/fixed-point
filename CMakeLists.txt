@@ -4,14 +4,15 @@ cmake_minimum_required(VERSION 3.12)
 project(fixed_point)
 
 set(SOURCE_TARGETS
-    float_to_fixed
-    fixed_arithmetic
-    extract_sign_bit
+    extract_exponent_bias
     extract_ieee_754
-    simple_ieee_754
-    simple_half
-    maratyszcza
+    extract_sign_bit
+    fixed_arithmetic
+    float_to_fixed
     google_bfloat
+    maratyszcza
+    simple_half
+    simple_ieee_754
 )
 
 # Add executable targets for your examples
@@ -21,14 +22,15 @@ endforeach()
 
 # List of your executable targets
 set(EXECUTABLE_TARGETS
-    float_to_fixed
-    fixed_arithmetic
-    extract_sign_bit
+    extract_exponent_bias
     extract_ieee_754
-    simple_ieee_754
-    simple_half
-    maratyszcza
+    extract_sign_bit
+    fixed_arithmetic
+    float_to_fixed
     google_bfloat
+    maratyszcza
+    simple_half
+    simple_ieee_754
 )
 
 # Loop through the target names and set the output directory for each
