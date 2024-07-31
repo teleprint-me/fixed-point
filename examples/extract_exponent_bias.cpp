@@ -63,22 +63,27 @@ int32_t convert_exponent(uint32_t bits, uint32_t width_src, uint32_t width_dest)
 
 int main() {
     try {
-        // test calculating integer based exponent values
+        // Test calculating integer-based exponent values
         for (size_t i = 0; i < 8; i++) {
             std::cout << "2^" << i << " = " << uint32_pow(2, i) << std::endl;
         }
 
-        // test calculating the bias
+        // Test large exponents
+        std::cout << "2^30 = " << uint32_pow(2, 30) << std::endl;
+        std::cout << "2^31 = " << uint32_pow(2, 31) << std::endl;
 
-        // 32-bit bias uses 8 bits
+        // Test the bias calculation for different bit widths
         uint32_t bias32 = calculate_bias(8);
         std::cout << "32-bit bias: " << bias32 << std::endl;
-        assert(127 == bias32); //  2^(8 - 1) - 1 = 127
+        assert(127 == bias32); // 2^(8 - 1) - 1 = 127
 
-        // 16-bit bias uses 5 bits
         uint32_t bias16 = calculate_bias(5);
         std::cout << "16-bit bias: " << bias16 << std::endl;
-        assert(15 == bias16); //  2^(5 - 1) - 1 = 15
+        assert(15 == bias16); // 2^(5 - 1) - 1 = 15
+
+        uint32_t bias8 = calculate_bias(3);
+        std::cout << "8-bit bias: " << bias8 << std::endl;
+        assert(3 == bias8); // 2^(3 - 1) - 1 = 3
 
         // Attempting a negative exponent (should throw an exception)
         std::cout << "2^-1 = " << uint32_pow(2, -1) << std::endl;
