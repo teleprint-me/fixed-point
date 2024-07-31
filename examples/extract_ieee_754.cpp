@@ -1,7 +1,7 @@
-/*
+/**
  * Copyright © 2024 Austin Berrio
  *
- * @file examples/simple_ieee_754.cpp
+ * @file examples/extract_ieee_754.cpp
  *
  * This program demonstrates the process of extracting components of a floating-point
  * number (sign, exponent, and mantissa) according to the IEEE 754 standard for
@@ -9,12 +9,13 @@
  * decimal number 6.25.
  *
  * Note: This is a simplified example and does not cover special cases like zero,
- * infinity, NaN, or rounding considerations.
+ * infinity, NaN, or rounding considerations. This will be implemented in the future.
  */
 
 #include <bitset>
 #include <cstdint>
 #include <cstring>
+#include <iomanip>
 #include <iostream>
 
 // Define a struct to represent the components of a floating-point number
@@ -158,7 +159,8 @@ int main() {
     // Output the extracted components for verification
     // this doesn't show precision or allow for control of precision like printf() does
     // how do i do this?
-    std::cout << "Floating Point Representation of " << pi << ":\n";
+    std::cout << "Floating Point Representation of ";
+    std::cout << std::fixed << std::setprecision(7) << pi << ":\n";
     std::cout << "Sign Bit: " << metadata.sign // sign
               << " (Binary: " << to_binary_string(metadata.sign, 1) << ")\n";
     std::cout << "Exponent Bits: " << metadata.exponent // integer
