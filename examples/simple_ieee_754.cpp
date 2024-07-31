@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/simple_ieee_754.cpp
+ *
+ * @brief A simple example showcasing 32-bit floating-point representation
+ * as a internal 32-bit as integer in literal binary format.
+ */
+
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -25,27 +34,29 @@ float decode_float32(uint32_t bits) {
 }
 
 // Function to print the binary representation of a 32-bit number
-void print_binary(uint32_t num) {
-    for (int i = 31; i >= 0; i--) {
-        printf("%d", (num >> i) & 1);
+void print_binary(uint32_t bits, size_t width) {
+    for (int i = width - 1; i >= 0; i--) {
+        printf("%d", (bits >> i) & 1);
+
         if (i % 4 == 0) {
             printf(" ");
         }
     }
+
     printf("\n");
 }
 
-void print_bit_representation(uint32_t n, size_t width) {
+void print_bit_representation(uint32_t bits, size_t width) {
     // Print the floating-point value
-    printf("%f -> ", decode_float32(n));
+    printf("%f -> ", decode_float32(bits));
 
     // Extract the sign bit
-    uint32_t sign = (n >> 31) & 0x1;
+    uint32_t sign = (bits >> 32 - 1) & 0x1;
     printf("%d ", sign);
 
     // Extract the exponent bits (8 bits)
-    uint32_t exponent = (n >> 23) & 0xFF;
-    for (int i = 7; i >= 0; i--) {
+    uint32_t exponent = (bits >> 23) & 0xFF;
+    for (int i = 8 - 1; i >= 0; i--) {
         printf("%d", (exponent >> i) & 0x1);
         if (i % 4 == 0) {
             printf(" ");
@@ -54,8 +65,8 @@ void print_bit_representation(uint32_t n, size_t width) {
     printf(" ");
 
     // Extract the mantissa bits (23 bits)
-    uint32_t mantissa = n & 0x7FFFFF;
-    for (int i = 22; i >= 0; i--) {
+    uint32_t mantissa = bits & 0x7FFFFF;
+    for (int i = 24 - 1; i >= 0; i--) {
         printf("%d", (mantissa >> i) & 0x1);
         if (i % 4 == 0) {
             printf(" ");
@@ -66,14 +77,15 @@ void print_bit_representation(uint32_t n, size_t width) {
 
 int main() {
     // float value = PI;
-    float value = 10;
+    const size_t bit_width = 32; // float is 32-bits wide
+    float        value     = 2;
 
     // Encode the float into IEEE-754 binary32 representation
     uint32_t encoded = encode_float32(value);
     printf("value (float): %f\n", value);
     printf("encoded (hex): 0x%08X\n", encoded);
     printf("encoded (binary): ");
-    print_binary(encoded);
+    print_binary(encoded, bit_width);
 
     // Decode the IEEE-754 binary32 representation back into a float
     float decoded = decode_float32(encoded);
