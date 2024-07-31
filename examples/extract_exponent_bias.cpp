@@ -4,11 +4,23 @@
  * @file examples/extract_exponent_bias.cpp
  */
 
+#include "../include/precision.h"
+
+#include <bitset>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
 
-// we only need to operate with powers of 2 in most cases
+/**
+ * @brief Computes a power of 2 raised to an exponent,
+ *        limited to positive exponents.
+ *
+ * @param exponent The exponent value, must be non-negative.
+ *
+ * @return uint32_t The result of 2 raised to the power of exponent.
+ *
+ * @throws std::invalid_argument If the exponent is negative
+ */
 uint32_t uint32_pow2(uint32_t exponent) {
     // Check for negative exponent and throw an exception if detected
     if (0 > static_cast<int32_t>(exponent)) {
@@ -22,11 +34,14 @@ uint32_t uint32_pow2(uint32_t exponent) {
 }
 
 /**
- * @brief Computes the power of a base raised to an exponent, limited to positive exponents.
+ * @brief Computes the power of a base raised to an exponent,
+ *        limited to positive exponents.
  *
  * @param base The base value, must be non-negative.
  * @param exponent The exponent value, must be non-negative.
+ *
  * @return uint32_t The result of base raised to the power of exponent.
+ *
  * @throws std::invalid_argument If the exponent is negative.
  */
 uint32_t uint32_pow(uint32_t base, uint32_t exponent) {
@@ -61,6 +76,11 @@ int32_t convert_exponent(uint32_t bits, uint32_t width_src, uint32_t width_dest)
     return exponent + bias_dest;
 }
 
+// Function to convert an integer to a binary string
+std::string to_binary_string(int value, int bits) {
+    return std::bitset<32>(value).to_string().substr(32 - bits);
+}
+
 int main() {
     try {
         // Test calculating integer-based exponent values
@@ -84,6 +104,10 @@ int main() {
         uint32_t bias8 = calculate_bias(3);
         std::cout << "8-bit bias: " << bias8 << std::endl;
         assert(3 == bias8); // 2^(3 - 1) - 1 = 3
+
+        // TODO: We need to encode in bits parameter first,
+        // otherwise the output will be erroneous.
+        int32_t exponent = convert_exponent(10, 32, 16);
 
         // Attempting a negative exponent (should throw an exception)
         std::cout << "2^-1 = " << uint32_pow(2, -1) << std::endl;
