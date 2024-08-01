@@ -1,7 +1,7 @@
 /**
  * Copyright © 2024 Austin Berrio
  *
- * @file include/precision.h
+ * @file include/floating_point.h
  *
  * @brief A simple and easy-to-use API in C for handling various floating-point
  *        precisions, including 32-bit (float), 16-bit (half precision float:
@@ -22,8 +22,8 @@
  * @ref https://github.com/pytorch/pytorch/blob/main/c10/util/Half.h
  */
 
-#ifndef PRECISION_H
-#define PRECISION_H
+#ifndef FLOATING_POINT_H
+#define FLOATING_POINT_H
 
 #include <assert.h>
 #include <math.h>
@@ -174,4 +174,4 @@ void print_32bit_raw(float32_t bits, size_t bit_width);
 void print_32bit_formatted(float32_t bits);
 void print_32bit_metadata(float value, const size_t bit_width);
 
-#endif // PRECISION_H
+#endif // FLOATING_POINT_H

@@ -1,7 +1,7 @@
 /**
  * Copyright © 2024 Austin Berrio
  *
- * @file src/precision.c
+ * @file src/floating_point.c
  *
  * @brief A simple and easy-to-use API in C for handling various floating-point
  *        precisions, including 32-bit (float), 16-bit (half precision float:
@@ -22,7 +22,7 @@
  * @ref https://github.com/pytorch/pytorch/blob/main/c10/util/Half.h
  */
 
-#include "../include/precision.h"
+#include "../include/floating_point.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -53,7 +53,7 @@ float decode_float32(float32_t bits) {
  * Binary 16-bit floating point representation
  */
 float16_t encode_float16(float value) {
-    const float_flex_t flex;
+    // const float_flex_t flex;
 
     const float scale_to_inf  = decode_float32(UINT32_C(0x77800000)); // Upper bound
     const float scale_to_zero = decode_float32(UINT32_C(0x08800000)); // Lower bound
