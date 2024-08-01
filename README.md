@@ -8,7 +8,7 @@ The Fixed-Point Arithmetic Library is a valuable resource for mastering and impl
 
 - **Comprehensive Header File**: Equipped with essential fixed-point data types and arithmetic functions.
 - **Practical Examples**: Demonstrative projects showcasing the application and advantages of fixed-point arithmetic.
-- **MIT License**:  MIT License for unrestricted educational and experimental use.
+- **AGPL License**: Licensed under the AGPL, ensuring freedom to use, modify, and distribute with adherence to its terms.
 
 ## Getting Started
 
@@ -65,7 +65,7 @@ For in-depth instructions on using the library effectively, refer to the accompa
 
 ## License
 
-This project operates under the MIT License. Detailed licensing terms can be found in the [LICENSE](LICENSE) file.
+This project is licensed under the AGPL. For detailed licensing terms, please refer to the [LICENSE](LICENSE) file.
 
 ## Contributing
 
