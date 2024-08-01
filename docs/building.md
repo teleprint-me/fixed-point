@@ -47,19 +47,19 @@ I have created convenience scripts to streamline the build process. These script
   cmake -B build -DCMAKE_BUILD_TYPE=Debug
   ```
   
-  If there are compilation issues, increasing verbosity can help. To enable verbosity while building, use:
+  If there are compilation issues, increasing verbosity can help. To enable verbose output while configuring the build, use:
 
   ```sh
   cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON
   ```
   
-  We can the build once the build process is configured. To speed up compilation, the jobs flag can be set. It's default value is set to 8, but may be adjusted according to the CPU. A good way to automate this is simply to use `nproc` which returns the processing count.
+  After configuring, build the project. To speed up compilation, you can use the `-j` flag to specify the number of parallel jobs. By default, this is set to 8, but you can adjust it according to your CPU. A convenient way to automatically set this to the number of available processors is to use `nproc`:
 
   ```sh
   cmake --build build --config Debug -j $(nproc)
   ```
 
-  `auto-build` is usually sufficient for rapid development cycles.
+  The `auto-build` script is generally sufficient for rapid development cycles.
 
 ## Build Path Structure
 
