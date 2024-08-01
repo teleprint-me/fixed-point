@@ -1,5 +1,5 @@
-#include "quant.h"
 #include "precision.h"
+#include "quantization.h"
 
 // Helper function to encode a float based on its data type
 float_t encode_float(float value, data_type_t type) {
