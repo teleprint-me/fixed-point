@@ -46,11 +46,18 @@ The Fixed-Point Arithmetic Library is a valuable resource for mastering and impl
     ./build.sh
     ```
 
-3. **Access Compiled Binaries**: Locate and run the compiled binaries.
+3. **Access Compiled Binaries**: The compiled binaries are organized by category and can be found in their respective directories.
 
     ```sh
-    ls build/examples/
-    ./build/examples/float_to_fixed
+    ls build/fixed-point
+    ls build/floating-point
+    ```
+
+4. **Execute Compiled Binaries**: Run the compiled binaries from the respective directories.
+
+    ```sh
+    ./build/fixed-point/float_to_fixed
+    ./build/floating-point/simple_ieee_754
     ```
 
 ## Usage
