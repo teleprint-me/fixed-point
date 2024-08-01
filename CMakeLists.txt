@@ -1,39 +1,17 @@
+# begin of CMakeLists.txt
 cmake_minimum_required(VERSION 3.12)
+project(fixed_point VERSION 0.0.1 DESCRIPTION "Library for manipulating binary representation and numerical precision formats")
 
-# Project Name
-project(fixed_point)
+# Include directories for common headers
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
-set(SOURCE_TARGETS
-    extract_exponent_bias
-    extract_ieee_754
-    extract_sign_bit
-    fixed_arithmetic
-    float_to_fixed
-    google_bfloat
-    maratyszcza
-    simple_half
-    simple_ieee_754
+add_library(fixed_point SHARED 
+    src/precision.c
+    # src/quant.c
 )
 
-# Add executable targets for your examples
-foreach(target ${SOURCE_TARGETS})
-    add_executable(${target} examples/${target}.cpp)
-endforeach()
-
-# List of your executable targets
-set(EXECUTABLE_TARGETS
-    extract_exponent_bias
-    extract_ieee_754
-    extract_sign_bit
-    fixed_arithmetic
-    float_to_fixed
-    google_bfloat
-    maratyszcza
-    simple_half
-    simple_ieee_754
-)
-
-# Loop through the target names and set the output directory for each
-foreach(target ${EXECUTABLE_TARGETS})
-    set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
-endforeach()
+# Add subdirectories for example categories
+add_subdirectory(examples/fixed-point)
+add_subdirectory(examples/floating-point)
+add_subdirectory(examples/quantization)
+# end of CMakeLists.txt
