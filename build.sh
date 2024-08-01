@@ -9,7 +9,7 @@ fi
 cmake -B build -DCMAKE_BUILD_TYPE=Debug || exit 1
 
 # Run CMake and build the project
-if cmake --build build -j 8; then
+if cmake --build build -j "$(nproc)"; then
   echo "Build successful!"
   exit 0
 else
