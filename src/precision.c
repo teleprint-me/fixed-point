@@ -25,6 +25,7 @@
 #include "../include/precision.h"
 
 #include <stdint.h>
+#include <stdio.h>
 
 bool float_is_close(float a, float b, float tolerance /*= FLOAT_TOLERANCE*/) {
     return fabsf(a - b) <= fmaxf(tolerance * fmaxf(fabsf(a), fabsf(b)), tolerance);
@@ -54,13 +55,13 @@ float decode_float32(float32_t bits) {
 float16_t encode_float16(float value) {
     const float_flex_t flex;
 
-    const float scale_to_inf  = decode_data(UINT32_C(0x77800000)); // Upper bound
-    const float scale_to_zero = decode_data(UINT32_C(0x08800000)); // Lower bound
+    const float scale_to_inf  = decode_float32(UINT32_C(0x77800000)); // Upper bound
+    const float scale_to_zero = decode_float32(UINT32_C(0x08800000)); // Lower bound
 
     const float saturated_f = fabsf(value) * scale_to_inf;
     float       base        = saturated_f * scale_to_zero;
 
-    const uint32_t f      = encode_data(value);
+    const uint32_t f      = encode_float32(value);
     const uint32_t shl1_f = f + f;
     const uint32_t sign   = f & UINT32_C(0x80000000);
     uint32_t       bias   = shl1_f & UINT32_C(0xFF000000);
@@ -68,8 +69,8 @@ float16_t encode_float16(float value) {
         bias = UINT32_C(0x71000000);
     }
 
-    base                         = decode_data((bias >> 1) + UINT32_C(0x07800000)) + base;
-    const uint32_t bits          = encode_data(base);
+    base                         = decode_float32((bias >> 1) + UINT32_C(0x07800000)) + base;
+    const uint32_t bits          = encode_float32(base);
     const uint32_t exp_bits      = (bits >> 13) & UINT32_C(0x00007C00);
     const uint32_t mantissa_bits = bits & UINT32_C(0x00000FFF);
     const uint32_t nonsign       = exp_bits + mantissa_bits;
@@ -83,18 +84,18 @@ float decode_float16(float16_t bits) {
     const uint32_t shl1_f = f + f;
 
     const uint32_t exp_offset       = UINT32_C(0xE0) << 23;
-    const float    exp_scale        = decode_float(UINT32_C(0x7800000));
-    const float    normalized_value = decode_float((shl1_f >> 4) + exp_offset) * exp_scale;
+    const float    exp_scale        = decode_float32(UINT32_C(0x7800000));
+    const float    normalized_value = decode_float32((shl1_f >> 4) + exp_offset) * exp_scale;
 
     const uint32_t magic_mask         = UINT32_C(126) << 23;
     const float    magic_bias         = 0.5f;
-    const float    denormalized_value = decode_float((shl1_f >> 17) | magic_mask) - magic_bias;
+    const float    denormalized_value = decode_float32((shl1_f >> 17) | magic_mask) - magic_bias;
 
     const uint32_t denormalized_cutoff = UINT32_C(1) << 27;
     const uint32_t result              = sign
-                            | (shl1_f < denormalized_cutoff ? encode_float(denormalized_value)
-                                                            : encode_float(normalized_value));
-    return decode_float(result);
+                            | (shl1_f < denormalized_cutoff ? encode_float32(denormalized_value)
+                                                            : encode_float32(normalized_value));
+    return decode_float32(result);
 }
 
 /*
@@ -131,7 +132,7 @@ float decode_bfloat16(bfloat16_t bf16) {
 }
 
 // Helper function to encode a float based on its data type
-// float_flex_t encode_float(float value, data_t type) {
+// float_flex_t encode_float32(float value, data_t type) {
 //     float_flex_t encoded;
 //     encoded.type      = type;
 //     encoded.value.f32 = value;
@@ -157,7 +158,7 @@ float decode_bfloat16(bfloat16_t bf16) {
 // }
 
 // Helper function to decode a float based on its data type
-// float decode_float(float_flex_t encoded) {
+// float decode_float32(float_flex_t encoded) {
 //     float value = 0.0f;
 //     switch (encoded.type) {
 //         case TYPE_FLOAT_F32:
