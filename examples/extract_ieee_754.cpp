@@ -21,9 +21,13 @@
 // Define a struct to represent the components of a floating-point number
 // Assuming 32-bit IEEE 754 single-precision format
 typedef struct {
-    uint32_t sign;     // Bit 31: Sign bit
-    uint32_t exponent; // Bits 30-23: Exponent
-    uint32_t mantissa; // Bits 22-0: Mantissa (Fraction)
+    uint32_t sign;          // Bit 31: Sign bit
+    uint32_t exponent;      // Bits 30-23: Exponent
+    uint32_t mantissa;      // Bits 22-0: Mantissa (Fraction)
+    uint32_t bias;          // Add bias for the format
+    uint32_t mask_sign;     // Mask for the sign
+    uint32_t mask_exponent; // Mask for the exponent
+    uint32_t mask_mantissa; // Mask for the mantissa
 } float_meta_t;
 
 typedef union {
@@ -97,6 +101,30 @@ uint32_t extract_exponent_bits(uint32_t bits) {
     return (bits >> 23) & 0xFF; // Assuming 32-bit single-precision
 }
 
+uint32_t uint32_pow(uint32_t base, uint32_t exponent) {
+    uint32_t result = 1;
+    while (exponent > 0) {
+        if (exponent & 1) {
+            result *= base;
+        }
+        base      *= base;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+uint32_t calculate_bias(uint32_t width) {
+    return uint32_pow(2, width - 1) - 1;
+}
+
+int32_t convert_exponent(uint32_t bits, uint32_t width_src, uint32_t width_dest) {
+    uint32_t bias_src      = calculate_bias(width_src);
+    uint32_t bias_dest     = calculate_bias(width_dest);
+    uint32_t exponent_mask = (1 << width_src) - 1;
+    int32_t  exponent      = ((bits >> (32 - width_src)) & exponent_mask) - bias_src;
+    return exponent + bias_dest;
+}
+
 // Function to extract the mantissa bits from a float
 uint32_t extract_mantissa_bits(uint32_t bits) {
     /**
@@ -136,14 +164,15 @@ float_meta_t extract_float_metadata(float value) {
     return meta_float;
 }
 
-uint32_t extract_binary_representation(float value, uint32_t shift_exp, uint32_t shift_mant) {
-    // Ensure that float and int have the same size for correct operation
-    static_assert(sizeof(float) == sizeof(uint32_t), "float and uint32_t must have the same size");
-
-    float_meta_t metadata = extract_float_metadata(value);
-
-    return (metadata.sign | (metadata.exponent) | (metadata.mantissa));
-}
+// return some kind of flexible type?
+// maybe start off with 32-bit just to get an idea of how this might work
+// uint32_t extract_binary_representation(float_meta_t meta, (void*) (float_meta_t meta)) {
+//
+// Ensure that float and int have the same size for correct operation
+// static_assert(sizeof(float) == sizeof(uint32_t), "float and uint32_t must have the same size");
+//
+// return (meta.sign) | (meta.exponent) | (meta.mantissa);
+// }
 
 // Function to convert an integer to a binary string
 std::string to_binary_string(int value, int bits) {
@@ -154,19 +183,22 @@ int main() {
     float pi = 3.141592653589793f;
 
     // Extract all components of the floating-point number
-    float_meta_t metadata = extract_float_metadata(pi);
+    float_meta_t meta = extract_float_metadata(pi);
+    // uint32_t     bits = extract_binary_representation(meta, 8, 23);
 
     // Output the extracted components for verification
     // this doesn't show precision or allow for control of precision like printf() does
     // how do i do this?
     std::cout << "Floating Point Representation of ";
     std::cout << std::fixed << std::setprecision(7) << pi << ":\n";
-    std::cout << "Sign Bit: " << metadata.sign // sign
-              << " (Binary: " << to_binary_string(metadata.sign, 1) << ")\n";
-    std::cout << "Exponent Bits: " << metadata.exponent // integer
-              << " (Binary: " << to_binary_string(metadata.exponent, 8) << ")\n";
-    std::cout << "Mantissa Bits: " << metadata.mantissa // fraction
-              << " (Binary: " << to_binary_string(metadata.mantissa, 23) << ")\n";
+    std::cout << "Sign Bit: " << meta.sign // sign
+              << " (Binary: " << to_binary_string(meta.sign, 1) << ")\n";
+    std::cout << "Exponent Bits: " << meta.exponent // integer
+              << " (Binary: " << to_binary_string(meta.exponent, 8) << ")\n";
+    std::cout << "Mantissa Bits: " << meta.mantissa // fraction
+              << " (Binary: " << to_binary_string(meta.mantissa, 23) << ")\n";
+
+    // std::cout << "Bit Representation: " << to_binary_string(bits, 32) << "\n";
 
     return 0;
 }
