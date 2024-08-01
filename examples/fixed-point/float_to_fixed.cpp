@@ -3,7 +3,7 @@
 */
 #include <iostream>
 
-#include "../include/fixed.h"
+#include "../include/fixed_point.h"
 
 int main() {
     std::cout.precision(10);
