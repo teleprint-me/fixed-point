@@ -2,7 +2,7 @@
 #include "precision.h"
 
 // Helper function to encode a float based on its data type
-float_t encode_float(float value, data_t type) {
+float_t encode_float(float value, data_type_t type) {
     float_t encoded;
     encoded.value = value;
     encoded.type  = type;
@@ -56,7 +56,7 @@ float decode_float(float_t encoded) {
 }
 
 // Allocates and initializes a quant_t structure
-quant_t* malloc_quant(float_t delta, size_t size, data_t dtype) {
+quant_t* malloc_quant(float_t delta, size_t size, data_type_t dtype) {
     quant_t* q = (quant_t*) malloc(sizeof(quant_t));
     if (!q) {
         return NULL;
@@ -83,7 +83,7 @@ void free_quant(quant_t* quant) {
 }
 
 // Example encoding of quantized values
-quant_t* encode_quant(float value, size_t size, data_t dtype) {
+quant_t* encode_quant(float value, size_t size, data_type_t dtype) {
     float_t  delta = encode_float(value, dtype);
     quant_t* quant = malloc_quant(delta, size, dtype);
 
