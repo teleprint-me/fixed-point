@@ -4,7 +4,7 @@
  * @file examples/extract_exponent_bias.cpp
  */
 
-#include "../include/precision.h"
+#include "floating_point.h"
 
 #include <bitset>
 #include <cassert>

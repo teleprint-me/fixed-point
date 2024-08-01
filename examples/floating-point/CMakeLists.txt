@@ -1,4 +1,4 @@
-# begin of examples/floating-point/CMakeLists.txt
+# Floating-Point CMakeLists.txt
 
 # Add floating-point related examples
 set(FLOATING_POINT_SOURCES
@@ -13,11 +13,9 @@ set(FLOATING_POINT_SOURCES
 )
 
 # Create executables for floating-point examples
-foreach(src ${FLOATING_POINT_SOURCES})
+foreach(src IN LISTS ${FLOATING_POINT_SOURCES})
     get_filename_component(target ${src} NAME_WE)
     add_executable(${target} ${src})
-    target_link_libraries(${target} precision)
+    target_link_libraries(${target} floating_point)
     set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/floating-point)
 endforeach()
-
-# end of examples/floating-point/CMakeLists.txt
