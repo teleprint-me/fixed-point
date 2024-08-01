@@ -1,4 +1,5 @@
 # begin of examples/fixed-point/CMakeLists.txt
+
 # Add fixed-point related examples
 set(FIXED_POINT_SOURCES
     fixed_arithmetic.cpp
@@ -14,4 +15,5 @@ foreach(src ${FIXED_POINT_SOURCES})
     # target_link_libraries(${target} fixed_point_lib)
     set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/fixed-point)
 endforeach()
+
 # end of examples/fixed-point/CMakeLists.txt

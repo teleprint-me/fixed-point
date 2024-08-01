@@ -1,4 +1,5 @@
 # begin of examples/floating-point/CMakeLists.txt
+
 # Add floating-point related examples
 set(FLOATING_POINT_SOURCES
     extract_exponent_bias.cpp
@@ -15,8 +16,8 @@ set(FLOATING_POINT_SOURCES
 foreach(src ${FLOATING_POINT_SOURCES})
     get_filename_component(target ${src} NAME_WE)
     add_executable(${target} ${src})
-    # precision.c should be compiled into a library
     target_link_libraries(${target} precision)
     set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/floating-point)
 endforeach()
+
 # end of examples/floating-point/CMakeLists.txt
