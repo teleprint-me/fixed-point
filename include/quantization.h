@@ -1,7 +1,7 @@
 #ifndef QUANT_H
 #define QUANT_H
 
-#include "precision.h"
+#include "floating_point.h"
 
 #include <stdint.h>
 
