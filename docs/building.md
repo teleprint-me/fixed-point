@@ -1,8 +1,10 @@
 # Building Fixed-Point Library
 
-The fixed-point library is designed as a library, rather than a standalone program. Example programs are included for demonstration purposes and convenience.
+Fixed-Point is designed as a library, rather than a standalone program. Example programs are included for demonstration purposes and convenience.
 
-Although I typically prefer using binaries directly in shell scripts or Makefiles, I've started learning CMake for this project despite its complexity. While CMake is powerful, its depth can be overwhelming. The core library is written in C, with example programs sometimes using limited C++ features. Despite C++'s advanced capabilities, especially in generics, metaprogramming, and the Standard Template Library (STL), I find C’s simplicity preferable.
+Although I typically prefer writing shell scripts or Makefiles for build processes, I've started learning CMake for this project despite its complexity. While CMake is powerful, its depth can be overwhelming.
+
+The core fixed-point library is written in C, with example programs sometimes using limited C++ features. Despite C++'s advanced capabilities, especially in generics, metaprogramming, and the Standard Template Library (STL), I find C’s simplicity preferable.
 
 ## Repository Structure
 
@@ -61,6 +63,8 @@ To build the project, you can use the `-j` flag to specify the number of paralle
 ```sh
 cmake --build build --config Debug -j $(nproc)
 ```
+
+For more details, refer to [CMake(1) Synopsis](https://cmake.org/cmake/help/latest/manual/cmake.1.html) and [CMake Reference Documentation](https://cmake.org/cmake/help/latest/).
 
 ### Manually Building with gcc
 
