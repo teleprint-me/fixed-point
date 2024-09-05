@@ -22,7 +22,7 @@
  * @ref https://github.com/pytorch/pytorch/blob/main/c10/util/Half.h
  */
 
-#include "../include/floating_point.h"
+#include "floating_point.h"
 
 #include <stdint.h>
 #include <stdio.h>

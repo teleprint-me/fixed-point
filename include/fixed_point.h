@@ -17,7 +17,7 @@
 #ifndef FIXED_POINT_H
 #define FIXED_POINT_H
 
-#include <cstdint>
+#include <stdint.h>
 
 /// Maximum allowable size of the Lookup Table (LUT).
 #define LUT_MAX_SIZE      1000
