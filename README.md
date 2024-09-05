@@ -2,92 +2,98 @@
 
 ## Overview
 
-Fixed-point is a lightweight Digital Signal Processing library written in pure C
-with a primary focus on fixed-point precision, floating-point precision, and
-quantization in pure C.
+Fixed-Point is a lightweight Digital Signal Processing library written in pure
+C, focusing on fixed-point precision, floating-point precision, and
+quantization.
 
 ## Key Features
 
-- **Comprehensive Header File**: Equipped with essential fixed-point data types
-  and arithmetic functions.
-- **Practical Examples**: Demonstrative projects showcasing the application and
-  advantages of fixed-point arithmetic.
-- **AGPL License**: Licensed under the AGPL, ensuring freedom to use, modify,
-  and distribute with adherence to its terms.
+- **Comprehensive Header Files**: Provides essential fixed-point data types and
+  arithmetic functions.
+- **Practical Examples**: Demonstrative projects showcasing the use and benefits
+  of fixed-point arithmetic.
 
 ## Getting Started
 
-1. **Clone the Repository**: Start by cloning the repository to your local
-   machine:
+### Clone the Repository
+
+Clone the repository with all submodules:
+
+```sh
+git clone --recurse-submodules -j$(nproc) \
+    https://github.com/teleprint-me/fixed-point.git
+cd fixed-point
+```
+
+### Update Submodules
+
+To ensure all submodules are up to date, run:
+
+```sh
+git submodule update --init --recursive
+```
+
+### Build the Project
+
+You can choose between automated and manual builds.
+
+#### Automated Build
+
+1. Make the build script executable:
 
    ```sh
-   git clone https://github.com/teleprint-me/fixed-point.git
+   chmod +x auto_build.sh
    ```
 
-2. **Explore the `fixed-point` Directory**: After cloning, navigate to the
-   `fixed-point` directory. Here, you can find the header files in the `include`
-   directory and example projects in the `examples` directory:
+2. Run the script to build, compile, and test:
 
    ```sh
-   cd fixed-point
-   ls include
-   ls examples
+   ./auto_build.sh
    ```
 
-3. **Customize and Build**: Dive into the examples to understand how the library
-   works. Feel free to modify and experiment with the code to fit your needs:
+#### Manual Build
+
+1. **Create the Build Environment:**
 
    ```sh
-   vim examples
+   cmake -B build -DCMAKE_BUILD_TYPE=Debug
    ```
 
-## Building the Library
-
-1. **Review the Build Script**: Familiarize yourself with the `build.sh` script,
-   which streamlines the library's compilation process.
+2. **Compile the Code:**
 
    ```sh
-   vim build.sh
+   cmake --build build --config Debug -j$(nproc)
    ```
 
-2. **Compile the Library**: Execute the `build.sh` script to compile the
-   library.
+3. **Run Tests:**
 
    ```sh
-   ./build.sh
+   ctest --rerun-failed --output-on-failure --test-dir build
    ```
 
-3. **Access Compiled Binaries**: The compiled binaries are organized by category
-   and can be found in their respective directories.
+## Exploring the Codebase
 
-   ```sh
-   ls build/fixed-point
-   ls build/floating-point
-   ```
+After cloning, explore the `fixed-point` directory to understand the library's
+structure:
 
-4. **Execute Compiled Binaries**: Run the compiled binaries from the respective
-   directories.
+- **Header Files**: Located in the `include` directory.
+- **Examples**: Sample projects demonstrating usage in the `examples` directory.
 
-   ```sh
-   ./build/fixed-point/float_to_fixed
-   ./build/floating-point/simple_ieee_754
-   ```
+```sh
+ls include
+ls examples
+```
 
 ## Usage
 
-Integrate the library into your C/C++ projects with ease:
+To integrate the library into your C/C++ projects, include the header files:
 
 ```c
 #include "fixed_point.h"
 ```
 
-For in-depth instructions on using the library effectively, refer to the
-accompanying documentation and examples.
-
-## Contributing
-
-Contributions are highly encouraged! Feel free to contribute ideas, bug fixes,
-or enhancements by submitting issues and pull requests.
+Refer to the example projects for guidance on using the library functions
+effectively.
 
 ## References
 
