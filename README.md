@@ -2,7 +2,9 @@
 
 ## Overview
 
-Fixed-Point is a library for Digital Signal Processing with a primary focus on fixed-point precision, floating-point precision, and quantization in pure C.
+Fixed-point is a lightweight Digital Signal Processing library written in pure C
+with a primary focus on fixed-point precision, floating-point precision, and
+quantization in pure C.
 
 ## Key Features
 
