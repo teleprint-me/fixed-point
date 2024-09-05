@@ -1,7 +1,14 @@
-// Original Reference: https://ieeexplore.ieee.org/document/8766229
-// Original Source: /usr/include/c10/util/half.h
-// 3rd Party Tutorial: https://www.geeksforgeeks.org/ieee-standard-754-floating-point-numbers/
-// 3rd Party Source: https://github.com/Maratyszcza/FP16
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/floating-point/ieee_754_32bit.cpp
+ *
+ * @ref https://ieeexplore.ieee.org/document/8766229
+ * @ref /usr/include/c10/util/half.h
+ * @ref https://www.geeksforgeeks.org/ieee-standard-754-floating-point-numbers/
+ * @ref https://github.com/Maratyszcza/FP16
+ */
+
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>

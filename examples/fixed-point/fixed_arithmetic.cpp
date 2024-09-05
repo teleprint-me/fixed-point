@@ -1,9 +1,12 @@
-/*
-    examples/fixed_arithmetic.cpp
-*/
-#include <iostream>
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/fixed-point/fixed_arithmetic.cpp
+ */
 
 #include "fixed_point.h"
+
+#include <iostream>
 
 int main() {
     std::cout.precision(10);

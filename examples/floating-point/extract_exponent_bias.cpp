@@ -1,7 +1,7 @@
 /**
  * Copyright © 2024 Austin Berrio
  *
- * @file examples/extract_exponent_bias.cpp
+ * @file examples/floating-point/extract_exponent_bias.cpp
  */
 
 #include "floating_point.h"

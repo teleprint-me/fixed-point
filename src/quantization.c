@@ -1,3 +1,9 @@
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file src/quantization.c
+ */
+
 #include "quantization.h"
 #include "floating_point.h"
 

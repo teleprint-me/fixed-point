@@ -1,9 +1,12 @@
-/*
-    examples/float_to_fixed.cpp
-*/
-#include <iostream>
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/fixed-point/float_to_fixed.cpp
+ */
 
 #include "fixed_point.h"
+
+#include <iostream>
 
 int main() {
     std::cout.precision(10);

@@ -1,8 +1,11 @@
-/*
-    examples/extract_sign_bit.cpp
-*/
-#include <iostream>
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/floating-point/extract_sign_bit.cpp
+ */
+
 #include <cstring>
+#include <iostream>
 
 // Function to extract the sign bit from a float
 int extract_sign_bit(float float_value) {
@@ -10,7 +13,7 @@ int extract_sign_bit(float float_value) {
     static_assert(sizeof(float) == sizeof(int), "Float and int must have the same size");
 
     int sign_bit;
-    
+
     // Copy the bytes of the float into the sign_bit integer
     std::memcpy(&sign_bit, &float_value, sizeof(float));
 

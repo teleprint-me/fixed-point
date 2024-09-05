@@ -1,7 +1,7 @@
 /**
  * Copyright © 2024 Austin Berrio
  *
- * @file examples/simple_ieee_754.cpp
+ * @file examples/floating-point/ieee_754_32bit.cpp
  *
  * @brief A simple example showcasing 32-bit floating-point representation
  * as a internal 32-bit as integer in literal binary format.

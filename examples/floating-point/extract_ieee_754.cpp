@@ -1,7 +1,7 @@
 /**
  * Copyright © 2024 Austin Berrio
  *
- * @file examples/extract_ieee_754.cpp
+ * @file examples/floating-point/extract_ieee_754.cpp
  *
  * This program demonstrates the process of extracting components of a floating-point
  * number (sign, exponent, and mantissa) according to the IEEE 754 standard for

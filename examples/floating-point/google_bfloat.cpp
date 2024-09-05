@@ -1,3 +1,9 @@
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/floating-point/google_bfloat.cpp
+ */
+
 #include <stdint.h>
 #include <stdio.h>
 

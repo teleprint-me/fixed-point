@@ -1,3 +1,9 @@
+/**
+ * Copyright © 2024 Austin Berrio
+ *
+ * @file examples/floating-point/simple_half.cpp
+ */
+
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
