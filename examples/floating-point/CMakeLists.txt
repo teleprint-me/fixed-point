@@ -12,7 +12,6 @@ set(FLOATING_POINT_SOURCES
     simple_ieee_754
 )
 
-# Create executables for fixed-point examples
 # Loop over each example and create an executable
 foreach(example IN LISTS FLOATING_POINT_SOURCES)
     add_executable(${example} ${PROJECT_SOURCE_DIR}/src/floating_point.c ${PROJECT_SOURCE_DIR}/examples/floating-point/${example}.cpp)
