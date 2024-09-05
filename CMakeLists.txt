@@ -1,40 +1,29 @@
 # Root CMakeLists.txt
 
-# Specify the cmake minimum version.
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
+project(fixed_point VERSION 0.1.0 DESCRIPTION "ANSI C library for Digital Signal Processing")
 
-# Specify the project information.
-project("fixed_point" VERSION 0.0.1 DESCRIPTION "Library for manipulating binary representation and numerical precision formats")
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)
 
-find_package(PkgConfig REQUIRED)
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set(SOURCE_FILES src/floating_point.c)
+add_library(fixed_point SHARED src/floating_point.c)
 
-# Include directories for common headers
-include_directories(include src)
-
-# Declare the library target; project depends on shared source files.
-add_library(floating_point SHARED ${SOURCE_FILES})
-# Link math library; link project against shared dependencies.
-target_link_libraries(floating_point m)
-
-# Set target properties
 set_target_properties(
-    floating_point PROPERTIES
+    fixed_point
+    PROPERTIES
+    VERSION ${PROJECT_VERSION}
     PUBLIC_HEADER include/fixed_point.h
     PUBLIC_HEADER include/floating_point.h
-    VERSION ${PROJECT_VERSION}
-    SOVERSION ${PROJECT_VERSION_MAJOR}
 )
 
-# Configure the directories to search for header files.
-target_include_directories(floating_point PUBLIC include)
+target_include_directories(fixed_point PUBLIC include)
 
-# Add library path for linking
+target_link_libraries(fixed_point m)
+
 link_directories(${CMAKE_BINARY_DIR})
 
-# Add subdirectories for example categories
 add_subdirectory(examples/fixed-point)
 add_subdirectory(examples/floating-point)

@@ -2,20 +2,21 @@
 
 # Add floating-point related examples
 set(FLOATING_POINT_SOURCES
-    extract_exponent_bias.cpp
-    extract_ieee_754.cpp
-    extract_sign_bit.cpp
-    google_bfloat.cpp
-    ieee_754_32bit.cpp
-    maratyszcza.cpp
-    simple_half.cpp
-    simple_ieee_754.cpp
+    extract_exponent_bias
+    extract_ieee_754
+    extract_sign_bit
+    google_bfloat
+    ieee_754_32bit
+    maratyszcza
+    simple_half
+    simple_ieee_754
 )
 
-# Create executables for floating-point examples
-foreach(src IN LISTS ${FLOATING_POINT_SOURCES})
-    get_filename_component(target ${src} NAME_WE)
-    add_executable(${target} ${src})
-    target_link_libraries(${target} floating_point)
-    set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/floating-point)
+# Create executables for fixed-point examples
+# Loop over each example and create an executable
+foreach(example IN LISTS FLOATING_POINT_SOURCES)
+    add_executable(${example} ${PROJECT_SOURCE_DIR}/src/floating_point.c ${PROJECT_SOURCE_DIR}/examples/floating-point/${example}.cpp)
+    target_link_libraries(${example} fixed_point)
+    target_include_directories(${example} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+    set_target_properties(${example} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/floating-point)
 endforeach()
