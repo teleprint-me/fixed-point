@@ -17,6 +17,10 @@
 #ifndef FIXED_POINT_H
 #define FIXED_POINT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 #include <stdint.h>
 
 /// Maximum allowable size of the Lookup Table (LUT).
@@ -93,5 +97,9 @@ typedef int32_t fixed16_t;
  * @return The floating-point representation of the fixed-point number.
  */
 #define FIXED_TO_FLOAT(x) ((float) (x) / FIXED_VAL)
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // FIXED_POINT_H

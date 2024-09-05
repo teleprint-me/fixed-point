@@ -25,6 +25,10 @@
 #ifndef FLOATING_POINT_H
 #define FLOATING_POINT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 #include <assert.h>
 #include <math.h>
 #include <stdbool.h>
@@ -173,5 +177,9 @@ float decode_float8(float8_t bits);
 void print_32bit_raw(float32_t bits, size_t bit_width);
 void print_32bit_formatted(float32_t bits);
 void print_32bit_metadata(float value, const size_t bit_width);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // FLOATING_POINT_H
