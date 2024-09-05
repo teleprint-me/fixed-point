@@ -29,6 +29,8 @@
 extern "C" {
 #endif // __cplusplus
 
+#include "float_is_close.h"
+
 #include <assert.h>
 #include <math.h>
 #include <stdbool.h>
@@ -78,20 +80,6 @@ typedef struct {
     float_data_t value;
     data_type_t  type;
 } float_flex_t;
-
-/**
- * @brief Determines if two floating-point values are approximately equal within
- * specified tolerances.
- *
- * @param[in]   a       The first floating-point value.
- * @param[in]   b       The second floating-point value.
- * @param[in]   tolerance Tolerance for comparing values (default:
- * FLOAT_TOLERANCE).
- *
- * @return true if the absolute difference between 'a' and 'b' is within the
- * tolerance bounds, false otherwise.
- */
-bool float_is_close(float a, float b, float tolerance);
 
 /**
  * @brief Encodes a given float value into its corresponding 32-bit representation.
