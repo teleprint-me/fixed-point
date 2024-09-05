@@ -9,6 +9,8 @@ set(CMAKE_C_EXTENSIONS ON)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
+add_subdirectory(mods/float_is_close)
+
 add_library(fixed_point SHARED src/floating_point.c)
 
 set_target_properties(
@@ -20,8 +22,7 @@ set_target_properties(
 )
 
 target_include_directories(fixed_point PUBLIC include)
-
-target_link_libraries(fixed_point m)
+target_link_libraries(fixed_point m float_is_close)
 
 link_directories(${CMAKE_BINARY_DIR})
 
