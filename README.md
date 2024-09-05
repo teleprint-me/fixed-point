@@ -70,10 +70,27 @@ Integrate the library into your C/C++ projects with ease:
 
 For in-depth instructions on using the library effectively, refer to the accompanying documentation and examples.
 
-## License
-
-This project is licensed under the AGPL. For detailed licensing terms, please refer to the [LICENSE](LICENSE) file.
-
 ## Contributing
 
 Contributions are highly encouraged! Feel free to contribute ideas, bug fixes, or enhancements by submitting issues and pull requests.
+
+## References
+
+### Mathematical Background
+
+- [Calculus](https://leanpub.com/apexcalculus)
+- [Discrete Mathematics](https://discrete.openmathbooks.org/dmoi3.html)
+- [Statistics and Probability](https://stats.libretexts.org/Courses/Las_Positas_College/Math_40%3A_Statistics_and_Probability)
+- [Linear Algebra](https://understandinglinearalgebra.org/home.html)
+- [Digital Signal Processing](https://www.dspguide.com/)
+
+### Programming References
+
+- [C Programming Language Standard](https://www.open-std.org/JTC1/SC22/WG14/)
+- [C Reference](https://en.cppreference.com/w/c)
+- [CMake Reference](https://cmake.org/cmake/help/latest/)
+- [Bash Reference](https://www.gnu.org/software/bash/manual/html_node/index.html)
+
+## License
+
+This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file for details.
