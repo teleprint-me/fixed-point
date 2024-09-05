@@ -1,11 +1,8 @@
-# Fixed-Point Arithmetic Library
+# Fixed-Point
 
 ## Overview
 
-The Fixed-Point Arithmetic Library is a valuable resource for mastering and
-implementing fixed-point arithmetic in C and C++. This library excels in
-handling real-world applications that demand precise numerical computations
-while providing a more efficient alternative to floating-point operations.
+Fixed-Point is a library for Digital Signal Processing with a primary focus on fixed-point precision, floating-point precision, and quantization in pure C.
 
 ## Key Features
 
