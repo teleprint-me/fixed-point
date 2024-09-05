@@ -93,6 +93,8 @@
     "complex": "cpp",
     "cstdint": "cpp",
     "ostream": "cpp",
-    "stdexcept": "cpp"
+    "stdexcept": "cpp",
+    "cassert": "cpp",
+    "iostream": "cpp"
   }
 }
